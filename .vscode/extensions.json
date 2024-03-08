@@ -1,0 +1,12 @@
+{
+  "recommendations": [
+    "esbenp.prettier-vscode",
+    "bradlc.vscode-tailwindcss",
+    "streetsidesoftware.code-spell-checker",
+    "eamodio.gitlens",
+    "codeandstuff.package-json-upgrade",
+    "richie5um2.vscode-sort-json",
+    "wayou.vscode-todo-highlight",
+    "streetsidesoftware.code-spell-checker-british-english"
+  ]
+}
