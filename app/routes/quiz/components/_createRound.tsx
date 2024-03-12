@@ -1,6 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
-import { useForm } from "react-hook-form";
+import { Form, useForm } from "react-hook-form";
 import { z } from "zod";
 import {
   Button,
@@ -11,9 +11,6 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-  Form,
-  FormControl,
-  FormField,
   FormItem,
   FormLabel,
   FormMessage,
@@ -67,19 +64,17 @@ export const CreateRoundModal: React.FC<CreateRoundModalProps> = ({
 
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-            <FormField
-              control={form.control}
-              name="title"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Round Title</FormLabel>
-                  <FormControl>
-                    <Input placeholder="General Knowledge" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            <FormItem>
+              <FormLabel>Round Title</FormLabel>
+
+              <Input
+                placeholder="General Knowledge"
+                {...form.register("title")}
+              />
+
+              <FormMessage />
+            </FormItem>
+
             <Button type="submit" className="w-full">
               Create Round
             </Button>

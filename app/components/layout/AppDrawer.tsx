@@ -1,4 +1,4 @@
-import { Link } from "@remix-run/react";
+import { Form, Link } from "@remix-run/react";
 import { Menu } from "lucide-react";
 import { create } from "zustand";
 import { Button } from "../ui/button";
@@ -26,16 +26,26 @@ export const AppDrawer: React.FC = () => {
         isOpen ? "left-0" : "-left-full md:left-0"
       }`}
     >
-      <Link to={"/"}>
-        <Button onClick={close} className="w-full">
-          Home
+      <Button onClick={close} className="w-full" asChild>
+        <Link to={"/"}>Home</Link>
+      </Button>
+      <Button onClick={close} className="w-full" asChild>
+        <Link to={"/quiz"}>Quiz DnD Kit</Link>
+      </Button>
+      <Button onClick={close} className="w-full" asChild>
+        <Link to={"/sign-in"}>Sign In</Link>
+      </Button>
+      <Button onClick={close} className="w-full" asChild>
+        <Link to={"/sign-up"}>Sign Up</Link>
+      </Button>
+      <Form action="/sign-out" method="post">
+        <Button onClick={close} type="submit" className="w-full">
+          Sign Out
         </Button>
-      </Link>
-      <Link to={"/quiz"}>
-        <Button onClick={close} className="w-full">
-          Quiz DnD Kit
-        </Button>
-      </Link>
+      </Form>
+      <Button onClick={close} className="w-full" asChild>
+        <Link to={"/dashboard"}>Dashboard</Link>
+      </Button>
     </nav>
   );
 };

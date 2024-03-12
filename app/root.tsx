@@ -39,6 +39,7 @@ export const links: LinksFunction = () => [
 
 export async function loader({ request }: LoaderFunctionArgs) {
   const { getTheme } = await themeSessionResolver(request);
+
   return {
     theme: getTheme(),
   };
@@ -54,7 +55,7 @@ export default function AppWithProviders() {
 }
 
 export function App() {
-  const data = useLoaderData<typeof loader>();
+  const { theme: sessionTheme } = useLoaderData<typeof loader>();
   const [theme] = useTheme();
 
   return (
@@ -63,10 +64,10 @@ export function App() {
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <Meta />
-        <PreventFlashOnWrongTheme ssrTheme={Boolean(data.theme)} />
+        <PreventFlashOnWrongTheme ssrTheme={Boolean(sessionTheme)} />
         <Links />
       </head>
-      <body className="max-w-[2400px] bg-zinc-50 text-zinc-950 dark:bg-zinc-950 dark:text-zinc-50">
+      <body className="max-w-[1600px] bg-zinc-50 text-zinc-950 dark:bg-zinc-950 dark:text-zinc-50">
         <div className="flex w-full flex-col">
           <AppHeader />
           <div className="flex w-full flex-row">
