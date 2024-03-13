@@ -21,7 +21,13 @@ const FormItem = React.forwardRef<
   HTMLDivElement,
   React.HTMLAttributes<HTMLDivElement>
 >(({ className, ...props }, ref) => {
-  return <div ref={ref} className={cn("space-y-2", className)} {...props} />;
+  return (
+    <div
+      ref={ref}
+      className={cn("flex flex-col gap-2 last:py-4", className)}
+      {...props}
+    />
+  );
 });
 FormItem.displayName = "FormItem";
 
