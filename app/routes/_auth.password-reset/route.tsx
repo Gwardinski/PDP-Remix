@@ -8,13 +8,14 @@ import {
   Button,
   FormContainer,
   FormItem,
+  FormItems,
   FormLabel,
   FormMessage,
   Input,
 } from "~/components/ui";
 
 const formSchema = z.object({
-  password: z.string().min(8).max(50),
+  email: z.string().min(2).max(50),
 });
 const resolver = zodResolver(formSchema);
 type FormType = z.infer<typeof formSchema>;
@@ -32,7 +33,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   return json({ success: true, error: false });
 };
 
-const PasswordNewPage = () => {
+const PasswordResetPage = () => {
   const response = useActionData<typeof action>();
 
   const { state } = useNavigation();
@@ -41,37 +42,33 @@ const PasswordNewPage = () => {
   const { handleSubmit, register, formState } = useRemixForm<FormType>({
     resolver,
     defaultValues: {
-      password: "",
+      email: "",
     },
   });
 
   return (
-    <>
-      {response?.success && <h3>Password successfully reset</h3>}
+    <FormContainer>
+      Doesn't work. Abandoned since switching from Supabase auth
+      <Form method="post" onSubmit={handleSubmit}>
+        <FormItems>
+          <FormItem>
+            <FormLabel>Email</FormLabel>
+            <Input placeholder="bla@mail.com" {...register("email")} />
+            {formState.errors.email && (
+              <FormMessage>{formState.errors.email.message}</FormMessage>
+            )}
+          </FormItem>
 
-      {!response?.success && (
-        <Form method="post" onSubmit={handleSubmit}>
-          <FormContainer>
-            <h3>Enter your new password</h3>
-            <FormItem>
-              <FormLabel>Password</FormLabel>
-              <Input {...register("password")} />
-              {formState.errors.password && (
-                <FormMessage>{formState.errors.password.message}</FormMessage>
-              )}
-            </FormItem>
-
-            <FormItem>
-              {response?.error && <FormMessage>{response.error}</FormMessage>}
-              <Button disabled={isSubmitting} type="submit">
-                Submit
-              </Button>
-            </FormItem>
-          </FormContainer>
-        </Form>
-      )}
-    </>
+          <FormItem>
+            {response?.error && <FormMessage>{response.error}</FormMessage>}
+            <Button disabled={isSubmitting} type="submit">
+              Submit
+            </Button>
+          </FormItem>
+        </FormItems>
+      </Form>
+    </FormContainer>
   );
 };
 
-export default PasswordNewPage;
+export default PasswordResetPage;

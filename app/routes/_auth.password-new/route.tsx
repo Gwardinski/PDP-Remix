@@ -8,13 +8,14 @@ import {
   Button,
   FormContainer,
   FormItem,
+  FormItems,
   FormLabel,
   FormMessage,
   Input,
 } from "~/components/ui";
 
 const formSchema = z.object({
-  email: z.string().min(2).max(50),
+  password: z.string().min(8).max(50),
 });
 const resolver = zodResolver(formSchema);
 type FormType = z.infer<typeof formSchema>;
@@ -32,7 +33,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   return json({ success: true, error: false });
 };
 
-const PasswordResetPage = () => {
+const PasswordNewPage = () => {
   const response = useActionData<typeof action>();
 
   const { state } = useNavigation();
@@ -41,41 +42,33 @@ const PasswordResetPage = () => {
   const { handleSubmit, register, formState } = useRemixForm<FormType>({
     resolver,
     defaultValues: {
-      email: "",
+      password: "",
     },
   });
 
   return (
-    <>
-      {response?.success && (
-        <h3>
-          If this email exists you will receive a link to reset your password.
-        </h3>
-      )}
+    <FormContainer>
+      Doesn't work. Abandoned since switching from Supabase auth
+      <Form method="post" onSubmit={handleSubmit}>
+        <FormItems>
+          <FormItem>
+            <FormLabel>Password</FormLabel>
+            <Input {...register("password")} />
+            {formState.errors.password && (
+              <FormMessage>{formState.errors.password.message}</FormMessage>
+            )}
+          </FormItem>
 
-      {!response?.success && (
-        <Form method="post" onSubmit={handleSubmit}>
-          <FormContainer>
-            <h3>Enter your email to receive a password reset link</h3>
-            <FormItem>
-              <FormLabel>Email</FormLabel>
-              <Input placeholder="bla@mail.com" {...register("email")} />
-              {formState.errors.email && (
-                <FormMessage>{formState.errors.email.message}</FormMessage>
-              )}
-            </FormItem>
-
-            <FormItem>
-              {response?.error && <FormMessage>{response.error}</FormMessage>}
-              <Button disabled={isSubmitting} type="submit">
-                Submit
-              </Button>
-            </FormItem>
-          </FormContainer>
-        </Form>
-      )}
-    </>
+          <FormItem>
+            {response?.error && <FormMessage>{response.error}</FormMessage>}
+            <Button disabled={isSubmitting} type="submit">
+              Submit
+            </Button>
+          </FormItem>
+        </FormItems>
+      </Form>
+    </FormContainer>
   );
 };
 
-export default PasswordResetPage;
+export default PasswordNewPage;

@@ -20,6 +20,7 @@ import {
 } from "remix-themes";
 import stylesheet from "~/globals.css";
 import { authCookie } from "./api/auth/authCookie";
+import { getUserFromId } from "./api/auth/getUserFromId";
 import { AppDrawer } from "./components/layout/AppDrawer";
 import { AppHeader } from "./components/layout/AppHeader";
 import { themeSessionResolver } from "./sessions.server";
@@ -43,15 +44,18 @@ export async function loader({ request }: LoaderFunctionArgs) {
   const { getTheme } = await themeSessionResolver(request);
   let cookieString = request.headers.get("Cookie");
   let userId = await authCookie.parse(cookieString);
+  const user = await getUserFromId(userId);
 
   return {
     theme: getTheme(),
     userId,
+    user,
   };
 }
 
 export default function AppWithProviders() {
   const data = useLoaderData<typeof loader>();
+
   return (
     <ThemeProvider specifiedTheme={data.theme} themeAction="/action/set-theme">
       <App />

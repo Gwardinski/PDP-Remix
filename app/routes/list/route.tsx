@@ -9,17 +9,13 @@ import { Form, useLoaderData } from "@remix-run/react";
 import { eq } from "drizzle-orm";
 import { db } from "~/api/db";
 import { items } from "~/api/schema";
-import {
-  PageAccordionDescription,
-  PageHeader,
-  PageLayout,
-  PageTitle,
-} from "~/components/layout";
+import { PageAccordion, PageHeader, PageLayout } from "~/components/layout";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
+  H1,
 } from "~/components/ui";
 
 export const meta: MetaFunction = () => {
@@ -73,8 +69,8 @@ export default function ListPage() {
   return (
     <PageLayout>
       <PageHeader>
-        <PageTitle>{"Drizzle Test Page"}</PageTitle>
-        <PageAccordionDescription>
+        <H1>{"Drizzle Test Page"}</H1>
+        <PageAccordion>
           <Accordion type="single" collapsible defaultValue="description">
             <AccordionItem value="description">
               <AccordionTrigger className="gap-4">
@@ -85,7 +81,7 @@ export default function ListPage() {
               <AccordionContent className="flex flex-col gap-2 pb-6"></AccordionContent>
             </AccordionItem>
           </Accordion>
-        </PageAccordionDescription>
+        </PageAccordion>
       </PageHeader>
 
       <div className="flex flex-col gap-8">

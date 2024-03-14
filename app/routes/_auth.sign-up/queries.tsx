@@ -1,7 +1,7 @@
 import bcrypt from "bcryptjs";
 import { eq } from "drizzle-orm";
-import { db } from "../db";
-import { profiles, users } from "../schema";
+import { db } from "../../api/db";
+import { profiles, users } from "../../api/schema";
 
 export const signUpWithEmailAndPassword = async (
   email: string,

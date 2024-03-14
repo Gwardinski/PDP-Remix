@@ -2,17 +2,21 @@ import { MetaFunction, json, useLoaderData } from "@remix-run/react";
 import { DocumentationLink, GithubLink } from "~/components/DocText";
 import { YoutubeVideo, YoutubeVideoGrid } from "~/components/Youtube";
 import {
-  PageAccordionDescription,
+  PageAccordion,
   PageHeader,
   PageHeading,
   PageLayout,
-  PageTitle,
+  SectionHeading,
 } from "~/components/layout";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
+  H1,
+  H1Description,
+  H2,
+  H2Description,
   Tabs,
   TabsContent,
   TabsList,
@@ -77,8 +81,13 @@ export default function HomePage() {
   return (
     <PageLayout>
       <PageHeader>
-        <PageTitle>PDP Playground</PageTitle>
-        <PageAccordionDescription>
+        <PageHeading>
+          <H1>PDP Playground</H1>
+          <H1Description>
+            Gordon Macintyre - Personal Development Project
+          </H1Description>
+        </PageHeading>
+        <PageAccordion>
           <Accordion type="single" collapsible defaultValue="description">
             <AccordionItem value="description">
               <AccordionTrigger className="gap-4">
@@ -111,14 +120,17 @@ export default function HomePage() {
               </AccordionContent>
             </AccordionItem>
           </Accordion>
-        </PageAccordionDescription>
+        </PageAccordion>
       </PageHeader>
 
-      <PageHeading>Tutorials</PageHeading>
-      <p>
-        Interesting things I've added to playlists and may or may not get around
-        to looking into 👀
-      </p>
+      <SectionHeading>
+        <H2>Tutorials</H2>
+        <H2Description>
+          Interesting things I've added to playlists and may or may not get
+          around to looking into 👀
+        </H2Description>
+      </SectionHeading>
+
       <Tabs defaultValue="1">
         <TabsList>
           <TabsTrigger value="1">Stuff to Code</TabsTrigger>

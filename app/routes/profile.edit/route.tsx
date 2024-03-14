@@ -6,27 +6,21 @@ import {
 } from "@remix-run/node";
 import {
   Form,
-  Link,
   json,
   useActionData,
   useNavigation,
+  useRouteLoaderData,
 } from "@remix-run/react";
 import { getValidatedFormData, useRemixForm } from "remix-hook-form";
 import { z } from "zod";
 import { authCookie } from "~/api/auth/authCookie";
-import { signInWithEmailAndPassword } from "~/api/auth/sign-in";
 import {
   CodeSnippet,
   DocumentationLink,
   GithubLink,
   VideoLink,
 } from "~/components/DocText";
-import {
-  PageAccordionDescription,
-  PageHeader,
-  PageLayout,
-  PageTitle,
-} from "~/components/layout";
+import { PageAccordion, PageHeader, PageLayout } from "~/components/layout";
 import {
   Accordion,
   AccordionContent,
@@ -35,14 +29,17 @@ import {
   Button,
   FormContainer,
   FormItem,
+  FormItems,
   FormLabel,
   FormMessage,
+  H1,
   Input,
 } from "~/components/ui";
+import { RootLoader } from "~/root";
+import { updateUsersName } from "./queries";
 
 const formSchema = z.object({
-  email: z.string().min(2).max(50),
-  password: z.string().min(1).max(32),
+  name: z.string().min(1).max(80),
 });
 const resolver = zodResolver(formSchema);
 type FormType = z.infer<typeof formSchema>;
@@ -54,37 +51,34 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     resolver,
   );
   if (errors) {
-    return json({ errors, receivedValues, success: false, error: null }, 400);
+    return json({ errors, receivedValues, success: false, error: null });
   }
 
-  // Sign In
-  const { email, password } = data;
-  const uid = await signInWithEmailAndPassword(email, password);
-
-  if (!uid) {
-    return json(
-      {
-        success: false,
-        error: "Incorrect Email / Password combination",
-      },
-      400,
-    );
+  let cookieString = request.headers.get("Cookie");
+  let userId = await authCookie.parse(cookieString);
+  if (!userId) {
+    return redirect("/");
   }
-  return redirect("/", {
-    headers: { "Set-Cookie": await authCookie.serialize(uid) },
-  });
+
+  // Update
+  const { name } = data;
+  await updateUsersName(userId, name);
+
+  return null;
 };
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   let cookieString = request.headers.get("Cookie");
   let userId = await authCookie.parse(cookieString);
-  if (userId) {
+  if (!userId) {
     return redirect("/");
   }
+
   return {};
 };
 
-const SignInPage = () => {
+const ProfilePageEdit = () => {
+  const data = useRouteLoaderData<RootLoader>("root");
   const response = useActionData<typeof action>();
 
   const { state } = useNavigation();
@@ -92,18 +86,22 @@ const SignInPage = () => {
 
   const { handleSubmit, register, formState } = useRemixForm<FormType>({
     resolver,
+    defaultValues: {
+      name: data?.user?.name,
+    },
   });
 
   return (
     <PageLayout>
       <PageHeader>
-        <PageTitle>Sign In</PageTitle>
-        <PageAccordionDescription>
-          <Accordion type="single" collapsible defaultValue="description">
+        <H1>Edit Profile</H1>
+        <PageAccordion>
+          <Accordion type="single" collapsible>
             <AccordionItem value="description">
               <AccordionTrigger className="gap-4">
                 <div className="flex items-start justify-start gap-2">
-                  Using <CodeSnippet>remix-hook-form</CodeSnippet> to register
+                  Using <CodeSnippet>remix-hook-form</CodeSnippet> to edit
+                  profile
                 </div>
               </AccordionTrigger>
               <AccordionContent className="flex flex-col gap-2 pb-6">
@@ -123,52 +121,31 @@ const SignInPage = () => {
               </AccordionContent>
             </AccordionItem>
           </Accordion>
-        </PageAccordionDescription>
+        </PageAccordion>
       </PageHeader>
 
-      <>
-        {response?.success && <h3>Please check your email.</h3>}
+      <FormContainer>
+        <Form method="post" onSubmit={handleSubmit}>
+          <FormItems>
+            <FormItem>
+              <FormLabel>Display Name</FormLabel>
+              <Input {...register("name")} />
+              {formState.errors.name && (
+                <FormMessage>{formState.errors.name.message}</FormMessage>
+              )}
+            </FormItem>
 
-        {!response?.success && (
-          <Form method="post" onSubmit={handleSubmit}>
-            <FormContainer>
-              <h3>Enter your email & password to log in.</h3>
-              <FormItem>
-                <FormLabel>Email</FormLabel>
-                <Input placeholder="bla@mail.com" {...register("email")} />
-                {formState.errors.email && (
-                  <FormMessage>{formState.errors.email.message}</FormMessage>
-                )}
-              </FormItem>
-
-              <FormItem>
-                <FormLabel>Password</FormLabel>
-                <Input type="password" {...register("password")} />
-                {formState.errors.password && (
-                  <FormMessage>{formState.errors.password.message}</FormMessage>
-                )}
-              </FormItem>
-
-              <FormItem>
-                {response?.error && <FormMessage>{response.error}</FormMessage>}
-                <Button disabled={isSubmitting} type="submit">
-                  Submit
-                </Button>
-                <Button
-                  variant="link"
-                  disabled={isSubmitting}
-                  type="submit"
-                  asChild
-                >
-                  <Link to="/password-reset">Forgot Password</Link>
-                </Button>
-              </FormItem>
-            </FormContainer>
-          </Form>
-        )}
-      </>
+            <FormItem>
+              {response?.error && <FormMessage>{response.error}</FormMessage>}
+              <Button disabled={isSubmitting} type="submit">
+                Submit
+              </Button>
+            </FormItem>
+          </FormItems>
+        </Form>
+      </FormContainer>
     </PageLayout>
   );
 };
 
-export default SignInPage;
+export default ProfilePageEdit;

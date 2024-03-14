@@ -1,7 +1,7 @@
 import bcrypt from "bcryptjs";
 import { eq } from "drizzle-orm";
-import { db } from "../db";
-import { users } from "../schema";
+import { db } from "../../api/db";
+import { users } from "../../api/schema";
 
 // generic fails. no hints as to where it went wrong
 export const signInWithEmailAndPassword = async (

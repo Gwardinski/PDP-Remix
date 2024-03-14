@@ -20,12 +20,7 @@ import {
   GithubLink,
   VideoLink,
 } from "~/components/DocText";
-import {
-  PageAccordionDescription,
-  PageHeader,
-  PageLayout,
-  PageTitle,
-} from "~/components/layout";
+import { PageAccordion, PageHeader, PageLayout } from "~/components/layout";
 import {
   Accordion,
   AccordionContent,
@@ -34,14 +29,16 @@ import {
   Button,
   FormContainer,
   FormItem,
+  FormItems,
   FormLabel,
   FormMessage,
+  H1,
   Input,
 } from "~/components/ui";
 import {
   checkAccountAlreadyExists,
   signUpWithEmailAndPassword,
-} from "../api/auth/sign-up";
+} from "./queries";
 
 const formSchema = z.object({
   email: z.string().min(2).max(80),
@@ -100,8 +97,8 @@ const SignUpPage = () => {
   return (
     <PageLayout>
       <PageHeader>
-        <PageTitle>Sign Up</PageTitle>
-        <PageAccordionDescription>
+        <H1>Sign Up</H1>
+        <PageAccordion>
           <Accordion type="single" collapsible defaultValue="description">
             <AccordionItem value="description">
               <AccordionTrigger className="gap-4">
@@ -126,50 +123,46 @@ const SignUpPage = () => {
               </AccordionContent>
             </AccordionItem>
           </Accordion>
-        </PageAccordionDescription>
+        </PageAccordion>
       </PageHeader>
 
-      <>
-        {response?.success && <h3>Please check your email.</h3>}
+      <FormContainer>
+        <Form method="post" onSubmit={handleSubmit}>
+          <FormItems>
+            <FormItem>
+              <FormLabel>Email</FormLabel>
+              <Input placeholder="bla@mail.com" {...register("email")} />
+              {formState.errors.email && (
+                <FormMessage>{formState.errors.email.message}</FormMessage>
+              )}
+            </FormItem>
+            <FormItem>
+              <FormLabel>Password</FormLabel>
+              <Input type="password" {...register("password")} />
+              {formState.errors.password && (
+                <FormMessage>{formState.errors.password.message}</FormMessage>
+              )}
+            </FormItem>
+            <FormItem>
+              <FormLabel>Display Name</FormLabel>
+              <Input {...register("name")} />
+              {formState.errors.name && (
+                <FormMessage>{formState.errors.name.message}</FormMessage>
+              )}
+            </FormItem>
 
-        {!response?.success && (
-          <Form method="post" onSubmit={handleSubmit}>
-            <FormContainer>
-              <FormItem>
-                <FormLabel>Email</FormLabel>
-                <Input placeholder="bla@mail.com" {...register("email")} />
-                {formState.errors.email && (
-                  <FormMessage>{formState.errors.email.message}</FormMessage>
-                )}
-              </FormItem>
-              <FormItem>
-                <FormLabel>Password</FormLabel>
-                <Input type="password" {...register("password")} />
-                {formState.errors.password && (
-                  <FormMessage>{formState.errors.password.message}</FormMessage>
-                )}
-              </FormItem>
-              <FormItem>
-                <FormLabel>Display Name</FormLabel>
-                <Input {...register("name")} />
-                {formState.errors.name && (
-                  <FormMessage>{formState.errors.name.message}</FormMessage>
-                )}
-              </FormItem>
-
-              <FormItem>
-                {response?.error && <FormMessage>{response.error}</FormMessage>}
-                <Button disabled={isSubmitting} type="submit">
-                  Submit
-                </Button>
-                <Button variant="link" disabled={isSubmitting} asChild>
-                  <Link to="/sign-in">Already Registered? Sign in here</Link>
-                </Button>
-              </FormItem>
-            </FormContainer>
-          </Form>
-        )}
-      </>
+            <FormItem>
+              {response?.error && <FormMessage>{response.error}</FormMessage>}
+              <Button disabled={isSubmitting} type="submit">
+                Submit
+              </Button>
+              <Button variant="link" disabled={isSubmitting} asChild>
+                <Link to="/sign-in">Already Registered? Sign in here</Link>
+              </Button>
+            </FormItem>
+          </FormItems>
+        </Form>
+      </FormContainer>
     </PageLayout>
   );
 };

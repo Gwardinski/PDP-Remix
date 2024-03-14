@@ -3,7 +3,22 @@ import { Label } from "app/components/ui/label";
 import * as React from "react";
 import { cn } from "../utils";
 
-const FormContainer = React.forwardRef<
+const FormContainer: React.FC<React.HTMLAttributes<HTMLDivElement>> = ({
+  className,
+  ...props
+}) => {
+  return (
+    <div
+      className={cn(
+        "flex max-w-lg flex-col gap-6 rounded-md bg-zinc-200 px-4 pt-6 dark:bg-zinc-900",
+        className,
+      )}
+      {...props}
+    />
+  );
+};
+
+const FormItems = React.forwardRef<
   HTMLDivElement,
   React.HTMLAttributes<HTMLDivElement>
 >(({ className, ...props }, ref) => {
@@ -15,7 +30,7 @@ const FormContainer = React.forwardRef<
     />
   );
 });
-FormContainer.displayName = "FormContainer";
+FormItems.displayName = "FormItems";
 
 const FormItem = React.forwardRef<
   HTMLDivElement,
@@ -79,4 +94,11 @@ const FormMessage = ({
   );
 };
 
-export { FormContainer, FormDescription, FormItem, FormLabel, FormMessage };
+export {
+  FormContainer,
+  FormDescription,
+  FormItem,
+  FormItems,
+  FormLabel,
+  FormMessage,
+};
