@@ -12,7 +12,6 @@ import {
   FormMessage,
   Input,
 } from "~/components/ui";
-import { createSupabaseServerClient } from "~/supabase.server";
 
 const formSchema = z.object({
   email: z.string().min(2).max(50),
@@ -29,17 +28,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   if (errors) {
     return json({ errors, receivedValues, success: false, error: null });
   }
-  // Supabase Sign In
-  const { supabaseClient } = createSupabaseServerClient(request);
-  const { email } = data;
-  const { error } = await supabaseClient.auth.resetPasswordForEmail(email, {
-    redirectTo: "http://localhost:3000/auth-callback-reset",
-  });
-  if (error) {
-    // TODO: handle each error type individually
-    console.log(error);
-    return json({ success: false, error: "Sorry. An error has occurred" });
-  }
+
   return json({ success: true, error: false });
 };
 

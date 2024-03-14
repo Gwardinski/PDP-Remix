@@ -13,7 +13,7 @@ const client = postgres(connectionString);
 
 export const db = drizzle(client, { schema });
 
-export const testFunc = async () => {
+export const connectionCheck = async () => {
   const dbResponse = await client`SELECT NOW();`;
   return dbResponse;
 };

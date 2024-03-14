@@ -19,6 +19,7 @@ import {
   useTheme,
 } from "remix-themes";
 import stylesheet from "~/globals.css";
+import { authCookie } from "./api/auth/authCookie";
 import { AppDrawer } from "./components/layout/AppDrawer";
 import { AppHeader } from "./components/layout/AppHeader";
 import { themeSessionResolver } from "./sessions.server";
@@ -37,11 +38,15 @@ export const links: LinksFunction = () => [
   { rel: "stylesheet", href: stylesheet },
 ];
 
+export type RootLoader = typeof loader;
 export async function loader({ request }: LoaderFunctionArgs) {
   const { getTheme } = await themeSessionResolver(request);
+  let cookieString = request.headers.get("Cookie");
+  let userId = await authCookie.parse(cookieString);
 
   return {
     theme: getTheme(),
+    userId,
   };
 }
 

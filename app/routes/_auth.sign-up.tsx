@@ -1,8 +1,19 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ActionFunctionArgs } from "@remix-run/node";
-import { Form, json, useActionData, useNavigation } from "@remix-run/react";
+import {
+  ActionFunctionArgs,
+  LoaderFunctionArgs,
+  redirect,
+} from "@remix-run/node";
+import {
+  Form,
+  Link,
+  json,
+  useActionData,
+  useNavigation,
+} from "@remix-run/react";
 import { getValidatedFormData, useRemixForm } from "remix-hook-form";
 import { z } from "zod";
+import { authCookie } from "~/api/auth/authCookie";
 import {
   CodeSnippet,
   DocumentationLink,
@@ -27,11 +38,14 @@ import {
   FormMessage,
   Input,
 } from "~/components/ui";
-import { createSupabaseServerClient } from "~/supabase.server";
+import {
+  checkAccountAlreadyExists,
+  signUpWithEmailAndPassword,
+} from "../api/auth/sign-up";
 
 const formSchema = z.object({
   email: z.string().min(2).max(80),
-  password: z.string().min(16).max(32),
+  password: z.string().min(8).max(32),
   name: z.string().min(1).max(80),
 });
 const resolver = zodResolver(formSchema);
@@ -47,22 +61,30 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     return json({ errors, receivedValues, success: false, error: null });
   }
 
-  // Supabase Sign Up
-  const { supabaseClient } = createSupabaseServerClient(request);
+  // Sign Up
   const { email, password, name } = data;
-  const { error } = await supabaseClient.auth.signUp({
-    email,
-    password,
-    options: {
-      data: { name },
+  const exists = await checkAccountAlreadyExists(email);
+  if (exists) {
+    return json({
+      success: false,
+      error: "An account with this email already exists",
+    });
+  }
+  const uid = await signUpWithEmailAndPassword(email, password, name);
+  return redirect("/", {
+    headers: {
+      "Set-Cookie": await authCookie.serialize(uid),
     },
   });
-  if (error) {
-    // TODO: handle each error type individually
-    console.log(error);
-    return json({ success: false, error: "Sorry. An error has occurred" });
+};
+
+export const loader = async ({ request }: LoaderFunctionArgs) => {
+  let cookieString = request.headers.get("Cookie");
+  let userId = await authCookie.parse(cookieString);
+  if (userId) {
+    return redirect("/");
   }
-  return json({ success: true, error: false });
+  return {};
 };
 
 const SignUpPage = () => {
@@ -73,30 +95,22 @@ const SignUpPage = () => {
 
   const { handleSubmit, register, formState } = useRemixForm<FormType>({
     resolver,
-    defaultValues: {
-      email: "",
-    },
   });
 
   return (
     <PageLayout>
       <PageHeader>
-        <PageTitle>Supabase Auth - Sign Up</PageTitle>
+        <PageTitle>Sign Up</PageTitle>
         <PageAccordionDescription>
           <Accordion type="single" collapsible defaultValue="description">
             <AccordionItem value="description">
               <AccordionTrigger className="gap-4">
                 <div className="flex items-start justify-start gap-2">
-                  Using <CodeSnippet>@supabase/ssr</CodeSnippet> &{" "}
-                  <CodeSnippet>remix-hook-form</CodeSnippet> to register
+                  Using <CodeSnippet>remix-hook-form</CodeSnippet> to register
                 </div>
               </AccordionTrigger>
               <AccordionContent className="flex flex-col gap-2 pb-6">
                 <GithubLink text="Source Code" href="/TODO" />
-                <DocumentationLink
-                  href="https://supabase.com/docs/guides/auth/server-side/creating-a-client"
-                  text="Supabase Auth"
-                />
                 <DocumentationLink
                   href="https://www.npmjs.com/package/remix-hook-form"
                   text="Remix Hook Form"
@@ -104,6 +118,10 @@ const SignUpPage = () => {
                 <VideoLink
                   href="https://www.youtube.com/watch?v=iom5nnj29sY"
                   text="Mastering Form Submissions in Remix with react-hook-form, remix-hook-form, zod, and Shadcn-UI"
+                />
+                <VideoLink
+                  href="https://youtube.com/playlist?list=PLXoynULbYuED9b2k5LS44v9TQjfXifwNu&si=iXhxzfb03tivk4BH"
+                  text="Trellix: build a Trello clone using Remix"
                 />
               </AccordionContent>
             </AccordionItem>
@@ -143,6 +161,9 @@ const SignUpPage = () => {
                 {response?.error && <FormMessage>{response.error}</FormMessage>}
                 <Button disabled={isSubmitting} type="submit">
                   Submit
+                </Button>
+                <Button variant="link" disabled={isSubmitting} asChild>
+                  <Link to="/sign-in">Already Registered? Sign in here</Link>
                 </Button>
               </FormItem>
             </FormContainer>

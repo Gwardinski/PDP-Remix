@@ -21,27 +21,19 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "~/components/ui";
-import { createSupabaseServerClient } from "~/supabase.server";
 
 export const meta: MetaFunction = () => {
   return [
-    { title: "Drizzle Supabase" },
+    { title: "Drizzle" },
     {
-      name: "Drizzle Supabase",
-      content: "Using Drizzle to get data from Supabase",
+      name: "Drizzle",
+      content: "Using Drizzle to get data from DB",
     },
   ];
 };
 
 const getUser = async (request: Request) => {
-  const { supabaseClient } = createSupabaseServerClient(request);
-  const {
-    data: { user },
-  } = await supabaseClient.auth.getUser();
-  if (!user) {
-    return null;
-  }
-  return user;
+  return null;
 };
 
 type Item = typeof items.$inferInsert;
@@ -81,13 +73,13 @@ export default function ListPage() {
   return (
     <PageLayout>
       <PageHeader>
-        <PageTitle>{"Drizzle / Supabase Test Page"}</PageTitle>
+        <PageTitle>{"Drizzle Test Page"}</PageTitle>
         <PageAccordionDescription>
           <Accordion type="single" collapsible defaultValue="description">
             <AccordionItem value="description">
               <AccordionTrigger className="gap-4">
                 <div className="flex flex-col items-start justify-start gap-2">
-                  <p>Using Drizzle ORM to connect to Supabase.</p>
+                  <p>Using Drizzle ORM to connect to Postgres DB.</p>
                 </div>
               </AccordionTrigger>
               <AccordionContent className="flex flex-col gap-2 pb-6"></AccordionContent>

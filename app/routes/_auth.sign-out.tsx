@@ -1,19 +1,24 @@
-import type { ActionFunctionArgs } from "@remix-run/node";
 import { redirect } from "@remix-run/node";
-import { createSupabaseServerClient } from "~/supabase.server";
+import { authCookie } from "~/api/auth/authCookie";
 
-export const action = async ({ request }: ActionFunctionArgs) => {
-  const { supabaseClient, headers } = createSupabaseServerClient(request);
-  // check if user is logged in
-  const {
-    data: { session },
-  } = await supabaseClient.auth.getSession();
-  if (!session?.user) {
-    return redirect("/");
-  }
-  // sign out
-  await supabaseClient.auth.signOut();
+// Sign out using <form method="post" action="sign-out" >
+export const action = async () => {
   return redirect("/", {
-    headers,
+    headers: {
+      "Set-Cookie": await authCookie.serialize("", {
+        maxAge: 0,
+      }),
+    },
+  });
+};
+
+// Sign out using <Link to="sign-out >
+export const loader = async () => {
+  return redirect("/", {
+    headers: {
+      "Set-Cookie": await authCookie.serialize("", {
+        maxAge: 0,
+      }),
+    },
   });
 };

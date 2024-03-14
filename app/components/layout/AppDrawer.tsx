@@ -1,6 +1,7 @@
-import { Form, Link } from "@remix-run/react";
+import { Form, Link, useLoaderData } from "@remix-run/react";
 import { Menu } from "lucide-react";
 import { create } from "zustand";
+import { RootLoader } from "../../root";
 import { Button } from "../ui/button";
 
 interface AppDrawerStore {
@@ -16,6 +17,7 @@ const useAppDrawerStore = create<AppDrawerStore>((set) => ({
 }));
 
 export const AppDrawer: React.FC = () => {
+  const { userId } = useLoaderData<RootLoader>();
   const isOpen = useAppDrawerStore((state) => state.isOpen);
   const close = useAppDrawerStore((state) => state.close);
 
@@ -26,6 +28,7 @@ export const AppDrawer: React.FC = () => {
         isOpen ? "left-0" : "-left-full md:left-0"
       }`}
     >
+      UserId: {userId}
       <Button onClick={close} className="w-full" asChild>
         <Link to={"/"}>Home</Link>
       </Button>

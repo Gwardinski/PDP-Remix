@@ -12,7 +12,6 @@ import {
   FormMessage,
   Input,
 } from "~/components/ui";
-import { createSupabaseServerClient } from "~/supabase.server";
 
 const formSchema = z.object({
   password: z.string().min(8).max(50),
@@ -29,18 +28,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   if (errors) {
     return json({ errors, receivedValues, success: false, error: null });
   }
-  // Supabase Sign In
-  const { password } = data;
-  const { supabaseClient } = createSupabaseServerClient(request);
 
-  const { error } = await supabaseClient.auth.updateUser({
-    password: password,
-  });
-  if (error) {
-    // TODO: handle each error type individually
-    console.log(error);
-    return json({ success: false, error: "Sorry. An error has occurred" });
-  }
   return json({ success: true, error: false });
 };
 
