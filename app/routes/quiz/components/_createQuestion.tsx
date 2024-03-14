@@ -11,8 +11,6 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-  FormControl,
-  FormField,
   FormItem,
   FormLabel,
   FormMessage,
@@ -79,54 +77,43 @@ export const CreateQuestion: React.FC<CreateQuestionModalProps> = ({
 
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-            <FormField
-              control={form.control}
-              name="title"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Question</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder="What is the Capital of Scotland"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
+            <FormItem>
+              <FormLabel>Question</FormLabel>
+              <Input
+                placeholder="What is the Capital of Scotland"
+                {...form.register("title")}
+              />
+              {form.formState.errors.title && (
+                <FormMessage>{form.formState.errors.title.message}</FormMessage>
               )}
-            />
-            <FormField
-              control={form.control}
-              name="answer"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Answer</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Edinburgh" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
+            </FormItem>
+
+            <FormItem>
+              <FormLabel>Answer</FormLabel>
+              <Input placeholder="Edinburgh" {...form.register("answer")} />
+              {form.formState.errors.answer && (
+                <FormMessage>
+                  {form.formState.errors.answer.message}
+                </FormMessage>
               )}
-            />
-            <FormField
-              control={form.control}
-              name="points"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Points</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="number"
-                      min={1}
-                      max={10}
-                      className="w-1/3"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
+            </FormItem>
+
+            <FormItem>
+              <FormLabel>Points</FormLabel>
+              <Input
+                type="number"
+                min={1}
+                max={10}
+                className="w-1/3"
+                {...form.register("points")}
+              />
+              {form.formState.errors.points && (
+                <FormMessage>
+                  {form.formState.errors.points.message}
+                </FormMessage>
               )}
-            />
+            </FormItem>
+
             <Button type="submit" className="w-full">
               Create Question
             </Button>

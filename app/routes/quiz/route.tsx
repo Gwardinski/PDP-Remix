@@ -1,7 +1,6 @@
 import { MetaFunction } from "@remix-run/node";
 import {
   BugText,
-  CodeSnippet,
   DocumentationLink,
   FunctionalText,
   GithubLink,
@@ -9,17 +8,13 @@ import {
   RefreshText,
   VideoLink,
 } from "~/components/DocText";
-import {
-  PageAccordionDescription,
-  PageHeader,
-  PageLayout,
-  PageTitle,
-} from "~/components/layout";
+import { PageAccordion, PageHeader, PageLayout } from "~/components/layout";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
+  H1,
 } from "~/components/ui";
 import QuizEditor from "./editor";
 import QuizEditorLibrary from "./library";
@@ -38,17 +33,13 @@ export default function QuizPage() {
   return (
     <PageLayout>
       <PageHeader>
-        <PageTitle>{"Quiz 'Trello' Board"}</PageTitle>
-        <PageAccordionDescription>
+        <H1>{"Quiz 'Trello' Board"}</H1>
+        <PageAccordion>
           <Accordion type="single" collapsible defaultValue="description">
             <AccordionItem value="description">
               <AccordionTrigger className="gap-4">
                 <div className="flex flex-col items-start justify-start gap-2">
                   <p>Interface for editing a Quiz, using DnD Kit & Zustand.</p>
-                  <p>
-                    Zustand means no <CodeSnippet>useState()</CodeSnippet> means
-                    no <CodeSnippet>{'"use client"'}</CodeSnippet>
-                  </p>
                 </div>
               </AccordionTrigger>
               <AccordionContent className="flex flex-col gap-2 pb-6">
@@ -82,7 +73,7 @@ export default function QuizPage() {
               </AccordionContent>
             </AccordionItem>
           </Accordion>
-        </PageAccordionDescription>
+        </PageAccordion>
       </PageHeader>
 
       <div className="flex flex-col gap-8 lg:flex-row">

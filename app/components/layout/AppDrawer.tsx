@@ -1,6 +1,7 @@
-import { Link } from "@remix-run/react";
+import { Form, Link, useLoaderData } from "@remix-run/react";
 import { Menu } from "lucide-react";
 import { create } from "zustand";
+import { RootLoader } from "../../root";
 import { Button } from "../ui/button";
 
 interface AppDrawerStore {
@@ -12,10 +13,12 @@ interface AppDrawerStore {
 const useAppDrawerStore = create<AppDrawerStore>((set) => ({
   isOpen: false,
   toggle: () => set((state) => ({ isOpen: !state.isOpen })),
-  close: () => set((state) => ({ isOpen: false })),
+  close: () => set((_) => ({ isOpen: false })),
 }));
 
 export const AppDrawer: React.FC = () => {
+  const { userId, user } = useLoaderData<RootLoader>();
+
   const isOpen = useAppDrawerStore((state) => state.isOpen);
   const close = useAppDrawerStore((state) => state.close);
 
@@ -26,16 +29,34 @@ export const AppDrawer: React.FC = () => {
         isOpen ? "left-0" : "-left-full md:left-0"
       }`}
     >
-      <Link to={"/"}>
-        <Button onClick={close} className="w-full">
-          Home
-        </Button>
-      </Link>
-      <Link to={"/quiz"}>
-        <Button onClick={close} className="w-full">
-          Quiz DnD Kit
-        </Button>
-      </Link>
+      <Button onClick={close} className="w-full" asChild>
+        <Link to={"/"}>Home</Link>
+      </Button>
+      {!userId && (
+        <>
+          <Button onClick={close} className="w-full" asChild>
+            <Link to={"/sign-up"}>Sign Up</Link>
+          </Button>
+          <Button onClick={close} className="w-full" asChild>
+            <Link to={"/sign-in"}>Sign In</Link>
+          </Button>
+        </>
+      )}
+      {userId && (
+        <>
+          <Button onClick={close} className="w-full" asChild>
+            <Link to={"/profile/edit"}>{user?.name}</Link>
+          </Button>
+          <Form action="/sign-out" method="post">
+            <Button onClick={close} type="submit" className="w-full">
+              Sign Out
+            </Button>
+          </Form>
+        </>
+      )}
+      <Button onClick={close} className="w-full" asChild>
+        <Link to={"/quiz"}>Quiz DnD Kit</Link>
+      </Button>
     </nav>
   );
 };

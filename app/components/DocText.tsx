@@ -1,13 +1,13 @@
 import { Link } from "@remix-run/react";
 import {
-  ExternalLink,
-  Youtube,
-  Github,
-  CheckCircle,
-  Wrench,
-  RefreshCw,
   Bug,
+  CheckCircle,
+  ExternalLink,
+  Github,
   ListTodo,
+  RefreshCw,
+  Wrench,
+  Youtube,
 } from "lucide-react";
 import { HTMLAttributes } from "react";
 
@@ -99,7 +99,7 @@ export const CodeSnippet: React.FC<HTMLAttributes<HTMLHeadingElement>> = (
   props,
 ) => (
   <code
-    className="rounded-md bg-zinc-300 px-1 py-0.5 dark:bg-zinc-700"
+    className="flex rounded-md bg-zinc-300 px-1 py-0.5 dark:bg-zinc-700"
     {...props}
   />
 );

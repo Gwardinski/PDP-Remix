@@ -19,6 +19,8 @@ import {
   useTheme,
 } from "remix-themes";
 import stylesheet from "~/globals.css";
+import { authCookie } from "./api/auth/authCookie";
+import { getUserFromId } from "./api/auth/getUserFromId";
 import { AppDrawer } from "./components/layout/AppDrawer";
 import { AppHeader } from "./components/layout/AppHeader";
 import { themeSessionResolver } from "./sessions.server";
@@ -37,15 +39,23 @@ export const links: LinksFunction = () => [
   { rel: "stylesheet", href: stylesheet },
 ];
 
+export type RootLoader = typeof loader;
 export async function loader({ request }: LoaderFunctionArgs) {
   const { getTheme } = await themeSessionResolver(request);
+  let cookieString = request.headers.get("Cookie");
+  let userId = await authCookie.parse(cookieString);
+  const user = await getUserFromId(userId);
+
   return {
     theme: getTheme(),
+    userId,
+    user,
   };
 }
 
 export default function AppWithProviders() {
   const data = useLoaderData<typeof loader>();
+
   return (
     <ThemeProvider specifiedTheme={data.theme} themeAction="/action/set-theme">
       <App />
@@ -54,7 +64,7 @@ export default function AppWithProviders() {
 }
 
 export function App() {
-  const data = useLoaderData<typeof loader>();
+  const { theme: sessionTheme } = useLoaderData<typeof loader>();
   const [theme] = useTheme();
 
   return (
@@ -63,10 +73,10 @@ export function App() {
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <Meta />
-        <PreventFlashOnWrongTheme ssrTheme={Boolean(data.theme)} />
+        <PreventFlashOnWrongTheme ssrTheme={Boolean(sessionTheme)} />
         <Links />
       </head>
-      <body className="max-w-[2400px] bg-zinc-50 text-zinc-950 dark:bg-zinc-950 dark:text-zinc-50">
+      <body className="max-w-[1600px] bg-zinc-50 text-zinc-950 dark:bg-zinc-950 dark:text-zinc-50">
         <div className="flex w-full flex-col">
           <AppHeader />
           <div className="flex w-full flex-row">

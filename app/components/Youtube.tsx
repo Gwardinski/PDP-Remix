@@ -67,7 +67,7 @@ export const YoutubeCard = ({ video }: { video: YoutubeVideo }) => {
   return (
     <a
       href={`https://www.youtube.com/watch?v=${videoId}`}
-      className="flex h-full w-full max-w-[480px] flex-col items-start justify-start overflow-hidden rounded-md border border-transparent hover:shadow-md sm:max-w-[320px]"
+      className="flex h-full w-full max-w-[480px] flex-col items-start justify-start overflow-hidden rounded-md border border-transparent hover:underline sm:max-w-[320px]"
     >
       {medium && high && (
         <>
