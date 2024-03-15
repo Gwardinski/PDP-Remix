@@ -6,7 +6,12 @@ import { getValidatedFormData, useRemixForm } from "remix-hook-form";
 import { z } from "zod";
 import {
   Button,
-  FormContainer,
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
   FormItem,
   FormItems,
   FormLabel,
@@ -37,7 +42,7 @@ const PasswordNewPage = () => {
   const response = useActionData<typeof action>();
 
   const { state } = useNavigation();
-  const isSubmitting = Boolean(state === "submitting");
+  const isSubmitting = Boolean(state === "submitting" || state === "loading");
 
   const { handleSubmit, register, formState } = useRemixForm<FormType>({
     resolver,
@@ -47,27 +52,35 @@ const PasswordNewPage = () => {
   });
 
   return (
-    <FormContainer>
-      Doesn't work. Abandoned since switching from Supabase auth
-      <Form method="post" onSubmit={handleSubmit}>
-        <FormItems>
-          <FormItem>
-            <FormLabel>Password</FormLabel>
-            <Input {...register("password")} />
-            {formState.errors.password && (
-              <FormMessage>{formState.errors.password.message}</FormMessage>
-            )}
-          </FormItem>
+    <Card className="max-w-lg">
+      <CardHeader>
+        <CardTitle>New Password</CardTitle>
+        <CardDescription>
+          Doesn't work. Abandoned since switching from Supabase auth
+        </CardDescription>
+      </CardHeader>
 
-          <FormItem>
-            {response?.error && <FormMessage>{response.error}</FormMessage>}
-            <Button disabled={isSubmitting} type="submit">
-              Submit
-            </Button>
-          </FormItem>
-        </FormItems>
+      <Form method="post" onSubmit={handleSubmit}>
+        <CardContent>
+          <FormItems>
+            <FormItem>
+              <FormLabel>Password</FormLabel>
+              <Input {...register("password")} />
+              {formState.errors.password && (
+                <FormMessage>{formState.errors.password.message}</FormMessage>
+              )}
+            </FormItem>
+          </FormItems>
+        </CardContent>
+
+        <CardFooter>
+          {response?.error && <FormMessage>{response.error}</FormMessage>}
+          <Button disabled={isSubmitting} type="submit">
+            Submit
+          </Button>
+        </CardFooter>
       </Form>
-    </FormContainer>
+    </Card>
   );
 };
 

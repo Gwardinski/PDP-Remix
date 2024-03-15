@@ -45,7 +45,7 @@ export const AppDrawer: React.FC = () => {
       {userId && (
         <>
           <Button onClick={close} className="w-full" asChild>
-            <Link to={"/profile/edit"}>{user?.name}</Link>
+            <Link to={"/account/edit"}>{user?.name}</Link>
           </Button>
           <Form action="/sign-out" method="post">
             <Button onClick={close} type="submit" className="w-full">
@@ -55,7 +55,10 @@ export const AppDrawer: React.FC = () => {
         </>
       )}
       <Button onClick={close} className="w-full" asChild>
-        <Link to={"/quiz"}>Quiz DnD Kit</Link>
+        <Link to={"/anagram"}>Anagram Solver - GPT</Link>
+      </Button>
+      <Button onClick={close} className="w-full" asChild>
+        <Link to={"/quiz"}>Quiz - DnD Kit</Link>
       </Button>
     </nav>
   );
