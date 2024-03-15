@@ -53,7 +53,10 @@ const AccountLayoutPage = () => {
                 </div>
               </AccordionTrigger>
               <AccordionContent className="flex flex-col gap-2 pb-6">
-                <GithubLink text="Source Code" href="/TODO" />
+                <GithubLink
+                  text="Source Code"
+                  href="https://github.com/Gwardinski/PDP-Remix/tree/main/app/routes"
+                />
                 <DocumentationLink
                   href="https://www.npmjs.com/package/remix-hook-form"
                   text="Remix Hook Form"

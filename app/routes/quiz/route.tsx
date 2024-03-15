@@ -45,7 +45,7 @@ export default function QuizPage() {
               <AccordionContent className="flex flex-col gap-2 pb-6">
                 <GithubLink
                   text="Source Code"
-                  href="https://github.com/Gwardinski/PDP/tree/main/src/app/quiz"
+                  href="https://github.com/Gwardinski/PDP-Remix/tree/main/app/routes/quiz"
                 />
                 <DocumentationLink
                   href="https://www.npmjs.com/package/zustand#typescript-usage"

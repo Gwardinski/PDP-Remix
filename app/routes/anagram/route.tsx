@@ -47,9 +47,9 @@ const AnagramLayoutPage = () => {
               <AccordionContent className="flex flex-col gap-2 pb-6">
                 <GithubLink
                   href={
-                    "https://platform.openai.com/docs/guides/text-generation"
+                    "https://github.com/Gwardinski/PDP-Remix/tree/main/app/routes/anagram._index"
                   }
-                  text={"Source Code"}
+                  text="Source Code"
                 ></GithubLink>
                 <DocumentationLink
                   href={
