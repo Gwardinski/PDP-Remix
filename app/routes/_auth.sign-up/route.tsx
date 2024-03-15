@@ -15,24 +15,17 @@ import { getValidatedFormData, useRemixForm } from "remix-hook-form";
 import { z } from "zod";
 import { authCookie } from "~/api/auth/authCookie";
 import {
-  CodeSnippet,
-  DocumentationLink,
-  GithubLink,
-  VideoLink,
-} from "~/components/DocText";
-import { PageAccordion, PageHeader, PageLayout } from "~/components/layout";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
   Button,
-  FormContainer,
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
   FormItem,
   FormItems,
   FormLabel,
   FormMessage,
-  H1,
   Input,
 } from "~/components/ui";
 import {
@@ -88,46 +81,22 @@ const SignUpPage = () => {
   const response = useActionData<typeof action>();
 
   const { state } = useNavigation();
-  const isSubmitting = Boolean(state === "submitting");
+  const isSubmitting = Boolean(state === "submitting" || state === "loading");
 
   const { handleSubmit, register, formState } = useRemixForm<FormType>({
     resolver,
   });
 
   return (
-    <PageLayout>
-      <PageHeader>
-        <H1>Sign Up</H1>
-        <PageAccordion>
-          <Accordion type="single" collapsible defaultValue="description">
-            <AccordionItem value="description">
-              <AccordionTrigger className="gap-4">
-                <div className="flex items-start justify-start gap-2">
-                  Using <CodeSnippet>remix-hook-form</CodeSnippet> to register
-                </div>
-              </AccordionTrigger>
-              <AccordionContent className="flex flex-col gap-2 pb-6">
-                <GithubLink text="Source Code" href="/TODO" />
-                <DocumentationLink
-                  href="https://www.npmjs.com/package/remix-hook-form"
-                  text="Remix Hook Form"
-                />
-                <VideoLink
-                  href="https://www.youtube.com/watch?v=iom5nnj29sY"
-                  text="Mastering Form Submissions in Remix with react-hook-form, remix-hook-form, zod, and Shadcn-UI"
-                />
-                <VideoLink
-                  href="https://youtube.com/playlist?list=PLXoynULbYuED9b2k5LS44v9TQjfXifwNu&si=iXhxzfb03tivk4BH"
-                  text="Trellix: build a Trello clone using Remix"
-                />
-              </AccordionContent>
-            </AccordionItem>
-          </Accordion>
-        </PageAccordion>
-      </PageHeader>
-
-      <FormContainer>
-        <Form method="post" onSubmit={handleSubmit}>
+    <Card className="max-w-lg">
+      <CardHeader>
+        <CardTitle>Sign Up!</CardTitle>
+        <CardDescription>
+          Enter your email, password and name to create an account
+        </CardDescription>
+      </CardHeader>
+      <Form method="post" onSubmit={handleSubmit}>
+        <CardContent>
           <FormItems>
             <FormItem>
               <FormLabel>Email</FormLabel>
@@ -136,6 +105,7 @@ const SignUpPage = () => {
                 <FormMessage>{formState.errors.email.message}</FormMessage>
               )}
             </FormItem>
+
             <FormItem>
               <FormLabel>Password</FormLabel>
               <Input type="password" {...register("password")} />
@@ -143,6 +113,7 @@ const SignUpPage = () => {
                 <FormMessage>{formState.errors.password.message}</FormMessage>
               )}
             </FormItem>
+
             <FormItem>
               <FormLabel>Display Name</FormLabel>
               <Input {...register("name")} />
@@ -150,20 +121,25 @@ const SignUpPage = () => {
                 <FormMessage>{formState.errors.name.message}</FormMessage>
               )}
             </FormItem>
-
-            <FormItem>
-              {response?.error && <FormMessage>{response.error}</FormMessage>}
-              <Button disabled={isSubmitting} type="submit">
-                Submit
-              </Button>
-              <Button variant="link" disabled={isSubmitting} asChild>
-                <Link to="/sign-in">Already Registered? Sign in here</Link>
-              </Button>
-            </FormItem>
           </FormItems>
-        </Form>
-      </FormContainer>
-    </PageLayout>
+        </CardContent>
+
+        {response?.error && (
+          <CardContent>
+            <FormMessage>{response.error}</FormMessage>
+          </CardContent>
+        )}
+
+        <CardFooter>
+          <Button disabled={isSubmitting} type="submit">
+            Submit
+          </Button>
+          <Button variant="link" disabled={isSubmitting} asChild>
+            <Link to="/sign-in">Already Registered? Sign in here</Link>
+          </Button>
+        </CardFooter>
+      </Form>
+    </Card>
   );
 };
 

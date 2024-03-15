@@ -91,13 +91,12 @@ export default function HomePage() {
           <Accordion type="single" collapsible defaultValue="description">
             <AccordionItem value="description">
               <AccordionTrigger className="gap-4">
-                PDP - Personal Development Project - Playground. A place to work
-                through various tutorials without having to setup individual
-                projects.
+                A place to work through various tutorials without having to
+                setup individual projects.
               </AccordionTrigger>
               <AccordionContent className="flex flex-col gap-2 pb-6">
                 <GithubLink
-                  href="https://github.com/Gwardinski/PDP"
+                  href="https://github.com/Gwardinski/PDP-Remix"
                   text="Source Code"
                 />
                 <h2 className="text-lg">Base TechStack</h2>

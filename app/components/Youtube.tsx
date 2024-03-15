@@ -1,3 +1,5 @@
+import { H4 } from "./ui";
+
 export type YoutubeVideo = {
   kind: string;
   etag: string;
@@ -49,7 +51,7 @@ export type YoutubeVideoResourceId = { kind: string; videoId: string };
 
 export const YoutubeVideoGrid = ({ videos }: { videos: YoutubeVideo[] }) => {
   return (
-    <div className="flex w-full flex-col items-center justify-center gap-4 overflow-hidden rounded-md bg-zinc-200 p-2 dark:bg-zinc-800 sm:grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 lg:p-4 ">
+    <div className="flex w-full flex-col items-center justify-center gap-4 overflow-hidden rounded-md bg-white p-2 dark:bg-black sm:grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 lg:p-4 ">
       {videos
         .filter((v) => v.snippet?.title !== "Private video")
         .map((video) => (
@@ -67,19 +69,19 @@ export const YoutubeCard = ({ video }: { video: YoutubeVideo }) => {
   return (
     <a
       href={`https://www.youtube.com/watch?v=${videoId}`}
-      className="flex h-full w-full max-w-[480px] flex-col items-start justify-start overflow-hidden rounded-md border border-transparent hover:underline sm:max-w-[320px]"
+      className="flex h-full w-full max-w-[480px] flex-col items-start justify-start gap-1 overflow-hidden rounded-md border border-transparent hover:underline sm:max-w-[320px]"
     >
       {medium && high && (
         <>
           <img
-            className="hidden lg:flex"
+            className="hidden rounded-md lg:flex"
             src={medium.url}
             alt={"thumbnail"}
             height={medium.height}
             width={medium.width}
           />
           <img
-            className="flex lg:hidden"
+            className="flex rounded-md lg:hidden"
             src={high.url}
             alt={"thumbnail"}
             height={high.height}
@@ -87,9 +89,9 @@ export const YoutubeCard = ({ video }: { video: YoutubeVideo }) => {
           />
         </>
       )}
-      <h3 className="max-h-[98px] overflow-hidden overflow-ellipsis leading-6">
+      <H4 className="max-h-[98px] overflow-hidden overflow-ellipsis">
         {title}
-      </h3>
+      </H4>
     </a>
   );
 };

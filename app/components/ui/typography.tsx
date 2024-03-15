@@ -55,7 +55,10 @@ export function H2Description({ className, ...props }: TextProps) {
 export function H3({ className, ...props }: TextProps) {
   return (
     <h3
-      className={cn("text-lg text-zinc-800 dark:text-zinc-200", className)}
+      className={cn(
+        "bg-gradient-to-b from-zinc-900 to-zinc-600 bg-clip-text text-xl font-bold tracking-wide text-transparent dark:from-zinc-100 dark:to-zinc-400",
+        className,
+      )}
       {...props}
     />
   );
@@ -65,10 +68,7 @@ export function H3({ className, ...props }: TextProps) {
 export function H3Description({ className, ...props }: TextProps) {
   return (
     <p
-      className={cn(
-        "text-lg leading-4 text-zinc-800 dark:text-zinc-200",
-        className,
-      )}
+      className={cn("text-md text-zinc-700 dark:text-zinc-300", className)}
       {...props}
     />
   );
@@ -79,7 +79,7 @@ export function H4({ className, ...props }: TextProps) {
   return (
     <h4
       className={cn(
-        "text-lg leading-4 text-zinc-800 dark:text-zinc-200",
+        "text-lg leading-6 text-zinc-800 dark:text-zinc-200",
         className,
       )}
       {...props}
