@@ -1,5 +1,6 @@
 import { Minus, PlusIcon } from "lucide-react";
 import { useState } from "react";
+import { toast } from "sonner";
 import { Button } from "~/components/ui";
 import { useGameStore } from "./_state";
 import { InfoCard } from "./components";
@@ -16,6 +17,7 @@ export const ReporterConfirmAttack: React.FC = () => {
   const [missed, setMissed] = useState(0);
 
   const [parried, setParried] = useState(0);
+
   const [inflicted, setInflicted] = useState(
     selectedUnits.map((u) => u.weapon.damage).reduce((a, b) => a + b, 0),
   );
@@ -28,12 +30,23 @@ export const ReporterConfirmAttack: React.FC = () => {
     // update values
     // do api
     reset();
+    toast("Attack successfully reported! Battle Reports have been updated.");
   }
 
   return (
     <div className="flex h-full w-full flex-col gap-4">
       <h2 className="text-2xl">Units</h2>
-      <InfoCard title="Total Damage Delt">
+      <InfoCard title="Total Damage Dealt">
+        {selectedUnits.length > 1 && (
+          <div className="flex flex-col gap-0 py-2 text-sm">
+            <p>
+              Comrades share in the glory of their victory. The total damage
+              dealt will be applied to both units battle reports, not split
+              among them.
+            </p>
+            <p>Note: It will only be applied once to the team as a whole.</p>
+          </div>
+        )}
         <div className="flex w-full flex-row items-center justify-start gap-2">
           <div className="flex w-1/2 flex-col items-start justify-start gap-2 overflow-x-clip">
             {selectedUnits.map((u) => (
@@ -54,7 +67,19 @@ export const ReporterConfirmAttack: React.FC = () => {
         </div>
       </InfoCard>
 
-      <InfoCard title="Shot Missed">
+      <InfoCard title="Shots Missed">
+        <div className="flex flex-col gap-0 py-2 text-sm">
+          {selectedUnits.length > 1 && (
+            <p>
+              Comrades share in their failure. Penalties are applied to all
+              parties that bring shame.
+            </p>
+          )}
+          <p>
+            Misses only. Do not include cover, shields etc getting in the way of
+            the kill.
+          </p>
+        </div>
         <div className="flex w-full flex-row items-center justify-start gap-2">
           <div className="flex w-1/2 flex-col items-start justify-start gap-2 overflow-x-clip">
             {selectedUnits.map((u) => (
@@ -77,6 +102,12 @@ export const ReporterConfirmAttack: React.FC = () => {
 
       <h2 className="text-2xl">Targets</h2>
       <InfoCard title="Damage Deflected">
+        <div className="flex flex-col gap-0 py-2 text-sm">
+          <p>
+            Any cover, shields, luck or anything else that prevented a clean
+            shot.
+          </p>
+        </div>
         <div className="flex w-full flex-row items-center justify-start gap-2">
           <div className="flex w-1/2 flex-col items-start justify-start gap-2 overflow-x-clip">
             {selectedTargets.map((u) => (
@@ -98,6 +129,9 @@ export const ReporterConfirmAttack: React.FC = () => {
       </InfoCard>
 
       <InfoCard title="Damage Inflicted">
+        <div className="flex flex-col gap-0 py-2 text-sm">
+          <p>Full damage taken, including environmental</p>
+        </div>
         <div className="flex w-full flex-row items-center justify-start gap-2">
           <div className="flex w-1/2 flex-col items-start justify-start gap-2 overflow-x-clip">
             {selectedTargets.map((u) => (
@@ -118,7 +152,7 @@ export const ReporterConfirmAttack: React.FC = () => {
         </div>
       </InfoCard>
 
-      <div className="absolute bottom-0 left-0 right-0 flex w-full gap-2 p-4">
+      <div className="fixed bottom-0 left-0 right-0 flex w-full gap-2 bg-gray-200 p-4">
         <Button onClick={reset} className="w-full">
           Cancel
         </Button>

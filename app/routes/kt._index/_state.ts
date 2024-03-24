@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { KT, Unit } from "./_data";
+import { KT, PLAYERS, Unit } from "./_data";
 
 type Mode = "selecting" | "confirming";
 type Action = "attack" | "heal" | "capture" | "idle";
@@ -20,7 +20,7 @@ interface GameState {
 }
 
 export const useGameStore = create<GameState>((set) => ({
-  players: [],
+  players: PLAYERS,
   selectedMode: "selecting",
   setMode: (mode: Mode) => set((_) => ({ selectedMode: mode })),
   selectedAction: "idle",

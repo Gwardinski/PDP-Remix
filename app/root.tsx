@@ -18,6 +18,7 @@ import {
   ThemeProvider,
   useTheme,
 } from "remix-themes";
+import { Toaster } from "sonner";
 import stylesheet from "~/globals.css";
 import { authCookie } from "./api/auth/authCookie";
 import { getUserFromId } from "./api/auth/getUserFromId";
@@ -86,6 +87,7 @@ export function App() {
             </main>
           </div>
         </div>
+        <Toaster />
         <ScrollRestoration />
         <Scripts />
         <LiveReload />
