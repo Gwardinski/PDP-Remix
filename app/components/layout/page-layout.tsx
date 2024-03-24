@@ -2,7 +2,7 @@ import { HTMLAttributes } from "react";
 
 // TODO: Add cn to enable classname overwrites
 export const PageLayout: React.FC<HTMLAttributes<HTMLDivElement>> = (props) => (
-  <section className="flex h-full flex-col gap-4 pb-40" {...props} />
+  <section className="flex h-full w-full flex-col gap-4 pb-40" {...props} />
 );
 
 export const PageHeader: React.FC<HTMLAttributes<HTMLHeadingElement>> = (

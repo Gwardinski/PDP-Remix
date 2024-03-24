@@ -60,6 +60,9 @@ export const AppDrawer: React.FC = () => {
       <Button onClick={close} className="w-full" asChild>
         <Link to={"/quiz"}>Quiz - DnD Kit</Link>
       </Button>
+      <Button onClick={close} className="w-full" asChild>
+        <Link to={"/kt"}>KT - (WIP)</Link>
+      </Button>
     </nav>
   );
 };

@@ -79,9 +79,9 @@ export function App() {
       <body className="max-w-[1600px] bg-zinc-50 text-zinc-950 dark:bg-zinc-950 dark:text-zinc-50">
         <div className="flex w-full flex-col">
           <AppHeader />
-          <div className="flex w-full flex-row">
+          <div className="flex w-full flex-row overflow-x-clip">
             <AppDrawer />
-            <main className="flex flex-1 flex-col gap-8 px-2 pb-40 md:ml-80 md:px-8">
+            <main className="flex flex-1 flex-col gap-8 overflow-x-clip px-2 pb-40 md:ml-80 md:px-4">
               <Outlet />
             </main>
           </div>
