@@ -7,6 +7,7 @@ import {
 } from "@remix-run/node";
 import { Form, useLoaderData } from "@remix-run/react";
 import { eq } from "drizzle-orm";
+import { getAuthenticatedUserId } from "~/api/auth/authQueries";
 import { db } from "~/api/db";
 import { items } from "~/api/schema";
 import { PageAccordion, PageHeader, PageLayout } from "~/components/layout";
@@ -28,34 +29,31 @@ export const meta: MetaFunction = () => {
   ];
 };
 
-const getUser = async (request: Request) => {
-  return null;
-};
-
 type Item = typeof items.$inferInsert;
 export async function action({ request }: ActionFunctionArgs) {
-  const user = await getUser(request);
-  if (!user) {
+  const userId = await getAuthenticatedUserId(request);
+  if (!userId) {
     return redirect("/");
   }
+
   const formData = await request.formData();
   const formContent = Object.fromEntries(formData) as Partial<Item>;
   const newItem: Item = {
     title: formContent.title!,
     description: formContent.description!,
-    uid: user.id,
+    uid: userId,
   };
   await db.insert(items).values(newItem);
   return true;
 }
 
 export async function loader({ request }: LoaderFunctionArgs) {
-  const user = await getUser(request);
-  if (!user) {
+  const userId = await getAuthenticatedUserId(request);
+  if (!userId) {
     return redirect("/");
   }
-  const uid = user.id;
 
+  const uid = userId;
   const data = await db.select().from(items).where(eq(items.uid, uid));
 
   return json({
