@@ -3,6 +3,7 @@ import { BattleAccolades } from "./BattleAccolades";
 import { BattleCommands } from "./BattleCommands";
 import { BattleOverview } from "./BattleOverview";
 import { ReporterConfirmAttack } from "./ReporterConfirmAttack";
+import { ReporterConfirmHeal } from "./ReporterConfirmHeal";
 import { ReporterSelect } from "./ReporterSelect";
 import { useGameStore } from "./_state";
 
@@ -39,11 +40,16 @@ const KTPage = () => {
             <h2 className="text-lg">Battle Reporter</h2>
             {mode === "selecting" && (
               <>
-              <ReporterSelect />
-              <BattleCommands />
+                <ReporterSelect />
+                <BattleCommands />
               </>
             )}
-            {mode === "confirming" && <ReporterConfirmAttack />}
+            {mode === "confirming" && action === "attack" && (
+              <ReporterConfirmAttack />
+            )}
+            {mode === "confirming" && action === "heal" && (
+              <ReporterConfirmHeal />
+            )}
           </section>
         </TabsContent>
       </Tabs>

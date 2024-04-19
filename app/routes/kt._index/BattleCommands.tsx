@@ -58,7 +58,7 @@ export const BattleCommands = () => {
   }
 
   return (
-    <footer className="fixed bottom-0 left-0 right-0 flex flex-col gap-4 rounded-md bg-gray-200 p-4 transition-all duration-200 ease-in-out">
+    <footer className="fixed bottom-0 left-0 right-0 flex flex-col gap-4 rounded-md bg-zinc-200 p-4 transition-all duration-200 ease-in-out">
       <div className="flex justify-between gap-2">
         <InfoCard
           title="Unit(s)"

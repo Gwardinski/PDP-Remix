@@ -1,15 +1,14 @@
-import { LoaderFunctionArgs } from "@remix-run/node";
+import { LoaderFunctionArgs, redirect } from "@remix-run/node";
 import { Outlet, useLoaderData } from "@remix-run/react";
-import { authCookie } from "~/api/auth/authCookie";
+import { isAuthenticated } from "~/api/auth";
 import { Unauthenticated } from "~/components/Unauthenticated";
-import { PageHeader, PageLayout } from "~/components/layout";
+import { Page, PageHeader } from "~/components/layout";
 import { H1 } from "~/components/ui";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
-  let cookieString = request.headers.get("Cookie");
-  let userId = await authCookie.parse(cookieString);
-  if (!userId) {
-    return false;
+  const uid = await isAuthenticated(request);
+  if (!uid) {
+    return redirect("/");
   }
   return true;
 };
@@ -18,13 +17,13 @@ const KTLayoutPage = () => {
   const response = useLoaderData<typeof loader>();
   const loggedIn = response;
   return (
-    <PageLayout>
+    <Page>
       <PageHeader>
         <H1>KT</H1>
       </PageHeader>
 
       {loggedIn ? <Outlet /> : <Unauthenticated />}
-    </PageLayout>
+    </Page>
   );
 };
 

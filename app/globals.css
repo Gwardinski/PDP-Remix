@@ -16,4 +16,35 @@
     -ms-overflow-style: none; /* IE and Edge */
     scrollbar-width: none; /* Firefox */
   }
+  .filter {
+    background-color: rgba(250, 245, 255, 0.25);
+    backdrop-filter: blur(32px);
+  }
+  .filter-dark {
+    background-color: rgba(9, 9, 11, 0.25);
+    backdrop-filter: blur(32px);
+  }
+  .glass {
+    /* zinc-50 */
+    background-color: rgba(250, 245, 255, 0.25);
+    backdrop-filter: blur(8px);
+    color: black;
+  }
+  /* Dark Mode - Menus / Selects */
+  .dark-glass {
+    /* zinc-950 */
+    background-color: rgba(9, 9, 11, 0.5);
+    backdrop-filter: blur(32px);
+    color: white;
+  }
+  /* Both Light / Dark - Card Overlays  */
+  .glass-overlay {
+    /* zinc-950 */
+    background-color: rgba(9, 9, 11, 0.1);
+    backdrop-filter: blur(16px);
+    color: white;
+    /* vignetting */
+    -webkit-box-shadow: inset 0px 0px 16px 16px rgba(0, 0, 0, 0.1);
+    box-shadow: inset 0px 0px 16px 16px rgba(0, 0, 0, 0.1);
+  }
 }

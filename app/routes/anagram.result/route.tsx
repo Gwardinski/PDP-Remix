@@ -41,7 +41,7 @@ const AnagramResultPage = () => {
   const response = useLoaderData<typeof loader>();
 
   return (
-    <Card className="max-w-lg">
+    <Card>
       <CardHeader>
         <CardTitle>{response.anagram}</CardTitle>
       </CardHeader>

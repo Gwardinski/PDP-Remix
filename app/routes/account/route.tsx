@@ -5,14 +5,19 @@ import {
   useLocation,
   useRouteLoaderData,
 } from "@remix-run/react";
-import { authCookie } from "~/api/auth/authCookie";
+import { isAuthenticated } from "~/api/auth";
 import {
   CodeSnippet,
   DocumentationLink,
   GithubLink,
   VideoLink,
 } from "~/components/DocText";
-import { PageAccordion, PageHeader, PageLayout } from "~/components/layout";
+import {
+  Page,
+  PageHeader,
+  PageHeaderAccordion,
+  PageHeading,
+} from "~/components/layout";
 import {
   Accordion,
   AccordionContent,
@@ -27,12 +32,11 @@ import {
 import { RootLoader } from "~/root";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
-  let cookieString = request.headers.get("Cookie");
-  let userId = await authCookie.parse(cookieString);
-  if (!userId) {
-    return redirect("/sign-in");
+  const uid = await isAuthenticated(request);
+  if (!uid) {
+    return redirect("/");
   }
-  return null;
+  return true;
 };
 
 const AccountLayoutPage = () => {
@@ -40,10 +44,12 @@ const AccountLayoutPage = () => {
   const pathname = useLocation().pathname;
 
   return (
-    <PageLayout>
+    <Page>
       <PageHeader>
-        <H1>Account - {data?.user?.name}</H1>
-        <PageAccordion>
+        <PageHeading>
+          <H1>Account - {data?.user?.name}</H1>
+        </PageHeading>
+        <PageHeaderAccordion>
           <Accordion type="single" collapsible>
             <AccordionItem value="description">
               <AccordionTrigger className="gap-4">
@@ -72,7 +78,7 @@ const AccountLayoutPage = () => {
               </AccordionContent>
             </AccordionItem>
           </Accordion>
-        </PageAccordion>
+        </PageHeaderAccordion>
       </PageHeader>
 
       <Tabs defaultValue={pathname} value={pathname}>
@@ -88,7 +94,7 @@ const AccountLayoutPage = () => {
           <Outlet />
         </TabsContent>
       </Tabs>
-    </PageLayout>
+    </Page>
   );
 };
 

@@ -11,8 +11,8 @@ export const ThemeToggle: React.FC = () => {
       variant="outline"
       onClick={() => setTheme(isDark ? Theme.LIGHT : Theme.DARK)}
     >
-      {isDark && <Sun className="size-3" />}
-      {!isDark && <Moon className="size-3" />}
+      {isDark && <Sun />}
+      {!isDark && <Moon />}
     </Button>
   );
 };

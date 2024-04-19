@@ -2,6 +2,7 @@ import { Form, Link, useLoaderData } from "@remix-run/react";
 import { Menu } from "lucide-react";
 import { create } from "zustand";
 import { RootLoader } from "../../root";
+import { H3 } from "../ui";
 import { Button } from "../ui/button";
 
 interface AppDrawerStore {
@@ -24,7 +25,7 @@ export const AppDrawer: React.FC = () => {
 
   return (
     <nav
-      className={`no-scrollbar fixed top-16 z-40 flex h-full w-full flex-col gap-3 overflow-y-auto overflow-x-hidden bg-zinc-50 p-2 pb-20 transition-all duration-200 ease-in-out dark:bg-zinc-950 md:top-20 md:w-80 ${
+      className={`no-scrollbar glass dark:dark-glass sticky top-16 z-40 mb-4 flex h-full w-full flex-col gap-3 overflow-y-auto overflow-x-hidden rounded-lg px-4 pb-8 pt-4 transition-all duration-200 ease-in-out ${
         // on larger screens, ignore isOpen and always show the menu
         isOpen ? "left-0" : "-left-full md:left-0"
       }`}
@@ -54,14 +55,37 @@ export const AppDrawer: React.FC = () => {
           </Form>
         </>
       )}
+      <H3>Playground</H3>
       <Button onClick={close} className="w-full" asChild>
         <Link to={"/anagram"}>Anagram Solver - GPT</Link>
       </Button>
       <Button onClick={close} className="w-full" asChild>
-        <Link to={"/quiz"}>Quiz - DnD Kit</Link>
+        <Link to={"/dnd/demo"}>Quiz - DnD Demo</Link>
       </Button>
       <Button onClick={close} className="w-full" asChild>
         <Link to={"/kt"}>KT - (WIP)</Link>
+      </Button>
+      <Button onClick={close} className="w-full" asChild>
+        <Link to={"/kt"}>PEW - (WIP)</Link>
+      </Button>
+      <H3>Apps</H3>
+      <Button onClick={close} className="w-full" asChild>
+        <a href="https://anagram-cruncher.vercel.app" target="_blank">
+          Anagram Cruncher
+        </a>
+      </Button>
+      <Button onClick={close} className="w-full" asChild>
+        <a href="https://pantie-packer.vercel.app" target="_blank">
+          PantiePacker
+        </a>
+      </Button>
+      <Button onClick={close} className="w-full" asChild>
+        <a href="https://quizflow-gm.vercel.app" target="_blank">
+          QuizFlow (WIP)
+        </a>
+      </Button>
+      <Button onClick={close} className="w-full" disabled>
+        Push The Button
       </Button>
     </nav>
   );

@@ -27,6 +27,11 @@ export default {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
       },
+      backgroundImage: {
+        "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
+        bg1: "url('app/_assets/bg1.jpeg')",
+        bg2: "url('app/_assets/bg2.jpeg')",
+      },
     },
   },
   plugins: [require("tailwindcss-animate"), "prettier-plugin-tailwindcss"],

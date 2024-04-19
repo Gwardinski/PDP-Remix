@@ -4,16 +4,19 @@ import {
   LoaderFunctionArgs,
   redirect,
 } from "@remix-run/node";
+import { Form, Link, json, useActionData } from "@remix-run/react";
 import {
-  Form,
-  Link,
-  json,
-  useActionData,
-  useNavigation,
-} from "@remix-run/react";
-import { getValidatedFormData, useRemixForm } from "remix-hook-form";
+  RemixFormProvider,
+  getValidatedFormData,
+  useRemixForm,
+} from "remix-hook-form";
 import { z } from "zod";
-import { authCookie } from "~/api/auth/authCookie";
+import {
+  authCookie,
+  dbSignInWithEmailAndPassword,
+  isAuthenticated,
+} from "~/api/auth";
+import { useIsPending } from "~/components/layout";
 import {
   Button,
   Card,
@@ -22,13 +25,14 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
+  FormControl,
+  FormField,
   FormItem,
   FormItems,
   FormLabel,
   FormMessage,
   Input,
 } from "~/components/ui";
-import { signInWithEmailAndPassword } from "~/routes/_auth.sign-in/queries";
 
 const formSchema = z.object({
   email: z.string().min(2).max(50),
@@ -49,7 +53,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 
   // Sign In
   const { email, password } = data;
-  const uid = await signInWithEmailAndPassword(email, password);
+  const uid = await dbSignInWithEmailAndPassword(email, password);
 
   if (!uid) {
     return json(
@@ -66,26 +70,24 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 };
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
-  let cookieString = request.headers.get("Cookie");
-  let userId = await authCookie.parse(cookieString);
-  if (userId) {
+  const uid = await isAuthenticated(request);
+  if (uid) {
     return redirect("/");
   }
-  return {};
+  return true;
 };
 
 const SignInPage = () => {
   const response = useActionData<typeof action>();
 
-  const { state } = useNavigation();
-  const isSubmitting = Boolean(state === "submitting" || state === "loading");
+  const { isPending } = useIsPending();
 
-  const { handleSubmit, register, formState } = useRemixForm<FormType>({
+  const form = useRemixForm<FormType>({
     resolver,
   });
 
   return (
-    <Card className="max-w-lg">
+    <Card>
       <CardHeader>
         <CardTitle>Sign In!</CardTitle>
         <CardDescription>
@@ -93,41 +95,55 @@ const SignInPage = () => {
         </CardDescription>
       </CardHeader>
 
-      <Form method="post" onSubmit={handleSubmit}>
-        <CardContent>
-          <FormItems>
-            <FormItem>
-              <FormLabel>Email</FormLabel>
-              <Input placeholder="bla@mail.com" {...register("email")} />
-              {formState.errors.email && (
-                <FormMessage>{formState.errors.email.message}</FormMessage>
-              )}
-            </FormItem>
-
-            <FormItem>
-              <FormLabel>Password</FormLabel>
-              <Input type="password" {...register("password")} />
-              {formState.errors.password && (
-                <FormMessage>{formState.errors.password.message}</FormMessage>
-              )}
-            </FormItem>
-          </FormItems>
-        </CardContent>
-
-        {response?.error && (
+      <Form method="post" onSubmit={form.handleSubmit}>
+        <RemixFormProvider {...form}>
           <CardContent>
-            <FormMessage>{response.error}</FormMessage>
-          </CardContent>
-        )}
+            <FormItems>
+              <FormField
+                control={form.control}
+                name="email"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Email</FormLabel>
+                    <FormControl>
+                      <Input {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-        <CardFooter>
-          <Button disabled={isSubmitting} type="submit">
-            Submit
-          </Button>
-          <Button variant="link" disabled={isSubmitting} type="submit" asChild>
-            <Link to="/password-reset">Forgot Password</Link>
-          </Button>
-        </CardFooter>
+              <FormField
+                control={form.control}
+                name="password"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Password</FormLabel>
+                    <FormControl>
+                      <Input type="password" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </FormItems>
+          </CardContent>
+
+          {response?.error && (
+            <CardContent>
+              <FormMessage>{response.error}</FormMessage>
+            </CardContent>
+          )}
+
+          <CardFooter>
+            <Button disabled={isPending} type="submit">
+              Submit
+            </Button>
+            <Button variant="link" disabled={isPending} type="submit" asChild>
+              <Link to="/password-reset">Forgot Password</Link>
+            </Button>
+          </CardFooter>
+        </RemixFormProvider>
       </Form>
     </Card>
   );

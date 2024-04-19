@@ -5,7 +5,12 @@ import {
   GithubLink,
   VideoLink,
 } from "~/components/DocText";
-import { PageAccordion, PageHeader, PageLayout } from "~/components/layout";
+import {
+  Page,
+  PageHeader,
+  PageHeaderAccordion,
+  PageHeading,
+} from "~/components/layout";
 import {
   Accordion,
   AccordionContent,
@@ -16,10 +21,13 @@ import {
 
 const AuthLayoutPage = () => {
   return (
-    <PageLayout>
+    <Page>
       <PageHeader>
-        <H1>Authentication</H1>
-        <PageAccordion>
+        <PageHeading>
+          <H1>Authentication</H1>
+        </PageHeading>
+
+        <PageHeaderAccordion>
           <Accordion type="single" collapsible defaultValue="description">
             <AccordionItem value="description">
               <AccordionTrigger className="gap-4">
@@ -47,11 +55,11 @@ const AuthLayoutPage = () => {
               </AccordionContent>
             </AccordionItem>
           </Accordion>
-        </PageAccordion>
+        </PageHeaderAccordion>
       </PageHeader>
 
       <Outlet />
-    </PageLayout>
+    </Page>
   );
 };
 
