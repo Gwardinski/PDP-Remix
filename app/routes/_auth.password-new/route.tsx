@@ -2,7 +2,11 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import type { ActionFunctionArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { Form, useActionData, useNavigation } from "@remix-run/react";
-import { getValidatedFormData, useRemixForm } from "remix-hook-form";
+import {
+  RemixFormProvider,
+  getValidatedFormData,
+  useRemixForm,
+} from "remix-hook-form";
 import { z } from "zod";
 import {
   Button,
@@ -42,9 +46,9 @@ const PasswordNewPage = () => {
   const response = useActionData<typeof action>();
 
   const { state } = useNavigation();
-  const isSubmitting = Boolean(state === "submitting" || state === "loading");
+  const isPending = Boolean(state === "submitting" || state === "loading");
 
-  const { handleSubmit, register, formState } = useRemixForm<FormType>({
+  const form = useRemixForm<FormType>({
     resolver,
     defaultValues: {
       password: "",
@@ -60,25 +64,25 @@ const PasswordNewPage = () => {
         </CardDescription>
       </CardHeader>
 
-      <Form method="post" onSubmit={handleSubmit}>
-        <CardContent>
-          <FormItems>
-            <FormItem>
-              <FormLabel>Password</FormLabel>
-              <Input {...register("password")} />
-              {formState.errors.password && (
-                <FormMessage>{formState.errors.password.message}</FormMessage>
-              )}
-            </FormItem>
-          </FormItems>
-        </CardContent>
+      <Form method="post" onSubmit={form.handleSubmit}>
+        <RemixFormProvider {...form}>
+          <CardContent>
+            <FormItems>
+              <FormItem>
+                <FormLabel>Password</FormLabel>
+                <Input />
+                <FormMessage />
+              </FormItem>
+            </FormItems>
+          </CardContent>
 
-        <CardFooter>
-          {response?.error && <FormMessage>{response.error}</FormMessage>}
-          <Button disabled={isSubmitting} type="submit">
-            Submit
-          </Button>
-        </CardFooter>
+          <CardFooter>
+            {response?.error && <FormMessage>{response.error}</FormMessage>}
+            <Button disabled={isPending} type="submit">
+              Submit
+            </Button>
+          </CardFooter>
+        </RemixFormProvider>
       </Form>
     </Card>
   );

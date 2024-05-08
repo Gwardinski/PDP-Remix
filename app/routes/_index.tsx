@@ -2,10 +2,9 @@ import { MetaFunction, json, useLoaderData } from "@remix-run/react";
 import { DocumentationLink, GithubLink } from "~/components/DocText";
 import { YoutubeVideo, YoutubeVideoGrid } from "~/components/Youtube";
 import {
+  Page,
   PageAccordion,
   PageHeader,
-  PageHeading,
-  PageLayout,
   SectionHeading,
 } from "~/components/layout";
 import {
@@ -79,14 +78,14 @@ export default function HomePage() {
   const { playlists } = useLoaderData<typeof loader>();
 
   return (
-    <PageLayout>
+    <Page>
       <PageHeader>
-        <PageHeading>
+        <H1>
           <H1>PDP Playground</H1>
           <H1Description>
             Gordon Macintyre - Personal Development Project
           </H1Description>
-        </PageHeading>
+        </H1>
         <PageAccordion>
           <Accordion type="single" collapsible defaultValue="description">
             <AccordionItem value="description">
@@ -142,6 +141,6 @@ export default function HomePage() {
           <YoutubeVideoGrid videos={playlists[1]} />
         </TabsContent>
       </Tabs>
-    </PageLayout>
+    </Page>
   );
 }

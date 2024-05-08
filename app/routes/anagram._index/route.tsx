@@ -87,7 +87,7 @@ const AnagramFormPage = () => {
   );
 
   const { state } = useNavigation();
-  const isSubmitting = Boolean(state === "submitting" || state === "loading");
+  const isPending = Boolean(state === "submitting" || state === "loading");
 
   const defaultNoOfWords = noOfWords ? parseInt(noOfWords) : undefined;
 
@@ -174,13 +174,13 @@ const AnagramFormPage = () => {
           <Button
             variant="outline"
             onClick={onShowHints}
-            disabled={isSubmitting}
+            disabled={isPending}
             type="button"
           >
             {showHints ? "Remove Hints" : "Add Hints"}
           </Button>
           {response?.error && <FormMessage>{response.error}</FormMessage>}
-          <Button disabled={isSubmitting} type="submit">
+          <Button disabled={isPending} type="submit">
             Submit
           </Button>
         </CardFooter>

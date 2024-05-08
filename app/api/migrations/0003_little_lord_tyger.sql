@@ -1,1 +1,0 @@
-ALTER TABLE "rounds" ALTER COLUMN "description" DROP NOT NULL;

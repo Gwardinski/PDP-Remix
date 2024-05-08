@@ -20,7 +20,7 @@ import {
 } from "remix-themes";
 import { Toaster } from "sonner";
 import stylesheet from "~/globals.css";
-import { getAuthenticatedUser } from "./api/auth/authQueries";
+import { dbGetAuthenticatedUser } from "./api/auth";
 import { AppDrawer } from "./components/layout/AppDrawer";
 import { AppHeader } from "./components/layout/AppHeader";
 import { themeSessionResolver } from "./sessions.server";
@@ -42,7 +42,7 @@ export const links: LinksFunction = () => [
 export type RootLoader = typeof loader;
 export async function loader({ request }: LoaderFunctionArgs) {
   const { getTheme } = await themeSessionResolver(request);
-  const user = await getAuthenticatedUser(request);
+  const user = await dbGetAuthenticatedUser(request);
 
   return {
     theme: getTheme(),

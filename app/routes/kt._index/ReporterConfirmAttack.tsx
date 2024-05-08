@@ -164,7 +164,7 @@ export const ReporterConfirmAttack: React.FC = () => {
         </div>
       </InfoCard>
 
-      <div className="fixed bottom-0 left-0 right-0 flex w-full flex-col gap-2 bg-gray-200 p-4">
+      <div className="fixed bottom-0 left-0 right-0 flex w-full flex-col gap-2 bg-zinc-200 p-4">
         <Button onClick={() => setShowInfo((v) => !v)}>Show Info</Button>
         <div className="flex gap-2">
           <Button onClick={reset} className="w-full">

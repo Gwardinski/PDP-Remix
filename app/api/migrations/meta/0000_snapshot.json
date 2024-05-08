@@ -1,11 +1,92 @@
 {
-  "id": "0c39735e-1dbd-449f-b7f4-276641b910f2",
+  "id": "f240c841-0d2c-459c-af77-83fdb9c21990",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "5",
   "dialect": "pg",
   "tables": {
-    "items": {
-      "name": "items",
+    "questions": {
+      "name": "questions",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "uid": {
+          "name": "uid",
+          "type": "serial",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "title": {
+          "name": "title",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "answer": {
+          "name": "answer",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "points": {
+          "name": "points",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "category": {
+          "name": "category",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "published": {
+          "name": "published",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "questions_uid_users_id_fk": {
+          "name": "questions_uid_users_id_fk",
+          "tableFrom": "questions",
+          "tableTo": "users",
+          "columnsFrom": [
+            "uid"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "quizzes": {
+      "name": "quizzes",
       "schema": "",
       "columns": {
         "id": {
@@ -32,6 +113,13 @@
           "primaryKey": false,
           "notNull": false
         },
+        "published": {
+          "name": "published",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
         "created_at": {
           "name": "created_at",
           "type": "timestamp",
@@ -49,9 +137,9 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "items_uid_users_id_fk": {
-          "name": "items_uid_users_id_fk",
-          "tableFrom": "items",
+        "quizzes_uid_users_id_fk": {
+          "name": "quizzes_uid_users_id_fk",
+          "tableFrom": "quizzes",
           "tableTo": "users",
           "columnsFrom": [
             "uid"
@@ -66,8 +154,8 @@
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },
-    "profiles": {
-      "name": "profiles",
+    "rounds": {
+      "name": "rounds",
       "schema": "",
       "columns": {
         "id": {
@@ -81,6 +169,26 @@
           "type": "serial",
           "primaryKey": false,
           "notNull": true
+        },
+        "title": {
+          "name": "title",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "description": {
+          "name": "description",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "''"
+        },
+        "published": {
+          "name": "published",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
         },
         "created_at": {
           "name": "created_at",
@@ -99,9 +207,9 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "profiles_uid_users_id_fk": {
-          "name": "profiles_uid_users_id_fk",
-          "tableFrom": "profiles",
+        "rounds_uid_users_id_fk": {
+          "name": "rounds_uid_users_id_fk",
+          "tableFrom": "rounds",
           "tableTo": "users",
           "columnsFrom": [
             "uid"
@@ -171,6 +279,120 @@
           ]
         }
       }
+    },
+    "quiz_to_round": {
+      "name": "quiz_to_round",
+      "schema": "",
+      "columns": {
+        "zid": {
+          "name": "zid",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "rid": {
+          "name": "rid",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "quiz_to_round_zid_quizzes_id_fk": {
+          "name": "quiz_to_round_zid_quizzes_id_fk",
+          "tableFrom": "quiz_to_round",
+          "tableTo": "quizzes",
+          "columnsFrom": [
+            "zid"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "quiz_to_round_rid_rounds_id_fk": {
+          "name": "quiz_to_round_rid_rounds_id_fk",
+          "tableFrom": "quiz_to_round",
+          "tableTo": "rounds",
+          "columnsFrom": [
+            "rid"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "quiz_to_round_zid_rid_pk": {
+          "name": "quiz_to_round_zid_rid_pk",
+          "columns": [
+            "zid",
+            "rid"
+          ]
+        }
+      },
+      "uniqueConstraints": {}
+    },
+    "round_to_question": {
+      "name": "round_to_question",
+      "schema": "",
+      "columns": {
+        "rid": {
+          "name": "rid",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "qid": {
+          "name": "qid",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "round_to_question_rid_rounds_id_fk": {
+          "name": "round_to_question_rid_rounds_id_fk",
+          "tableFrom": "round_to_question",
+          "tableTo": "rounds",
+          "columnsFrom": [
+            "rid"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "round_to_question_qid_questions_id_fk": {
+          "name": "round_to_question_qid_questions_id_fk",
+          "tableFrom": "round_to_question",
+          "tableTo": "questions",
+          "columnsFrom": [
+            "qid"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "round_to_question_rid_qid_pk": {
+          "name": "round_to_question_rid_qid_pk",
+          "columns": [
+            "rid",
+            "qid"
+          ]
+        }
+      },
+      "uniqueConstraints": {}
     }
   },
   "enums": {},

@@ -58,7 +58,10 @@ export const AppDrawer: React.FC = () => {
         <Link to={"/anagram"}>Anagram Solver - GPT</Link>
       </Button>
       <Button onClick={close} className="w-full" asChild>
-        <Link to={"/quiz/demo"}>Quiz - DnD Kit</Link>
+        <Link to={"/library"}>Quiz</Link>
+      </Button>
+      <Button onClick={close} className="w-full" asChild>
+        <Link to={"/dnd/demo"}>Quiz - DnD Demo</Link>
       </Button>
       <Button onClick={close} className="w-full" asChild>
         <Link to={"/kt"}>KT - (WIP)</Link>

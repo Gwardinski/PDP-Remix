@@ -5,7 +5,7 @@ import {
   GithubLink,
   VideoLink,
 } from "~/components/DocText";
-import { PageAccordion, PageHeader, PageLayout } from "~/components/layout";
+import { Page, PageAccordion, PageHeader } from "~/components/layout";
 import {
   Accordion,
   AccordionContent,
@@ -16,7 +16,7 @@ import {
 
 const AuthLayoutPage = () => {
   return (
-    <PageLayout>
+    <Page>
       <PageHeader>
         <H1>Authentication</H1>
         <PageAccordion>
@@ -51,7 +51,7 @@ const AuthLayoutPage = () => {
       </PageHeader>
 
       <Outlet />
-    </PageLayout>
+    </Page>
   );
 };
 

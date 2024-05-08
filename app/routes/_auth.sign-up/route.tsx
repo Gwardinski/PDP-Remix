@@ -11,9 +11,16 @@ import {
   useActionData,
   useNavigation,
 } from "@remix-run/react";
-import { getValidatedFormData, useRemixForm } from "remix-hook-form";
+import {
+  RemixFormProvider,
+  getValidatedFormData,
+  useRemixForm,
+} from "remix-hook-form";
 import { z } from "zod";
+import { isAuthenticated } from "~/api/auth";
 import { authCookie } from "~/api/auth/authCookie";
+import { dbCheckAccountAlreadyExists } from "~/api/auth/dbCheckAccountExists";
+import { dbSignUpWithEmailAndPassword } from "~/api/auth/dbSignUpWithEmailPassword";
 import {
   Button,
   Card,
@@ -22,16 +29,14 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
+  FormControl,
+  FormField,
   FormItem,
   FormItems,
   FormLabel,
   FormMessage,
   Input,
 } from "~/components/ui";
-import {
-  checkAccountAlreadyExists,
-  signUpWithEmailAndPassword,
-} from "./queries";
 
 const formSchema = z.object({
   email: z.string().min(2).max(80),
@@ -53,14 +58,14 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 
   // Sign Up
   const { email, password, name } = data;
-  const exists = await checkAccountAlreadyExists(email);
+  const exists = await dbCheckAccountAlreadyExists(email);
   if (exists) {
     return json({
       success: false,
       error: "An account with this email already exists",
     });
   }
-  const uid = await signUpWithEmailAndPassword(email, password, name);
+  const uid = await dbSignUpWithEmailAndPassword(email, password, name);
   return redirect("/", {
     headers: {
       "Set-Cookie": await authCookie.serialize(uid),
@@ -69,21 +74,20 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 };
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
-  let cookieString = request.headers.get("Cookie");
-  let userId = await authCookie.parse(cookieString);
-  if (userId) {
+  const uid = await isAuthenticated(request);
+  if (uid) {
     return redirect("/");
   }
-  return {};
+  return true;
 };
 
 const SignUpPage = () => {
   const response = useActionData<typeof action>();
 
   const { state } = useNavigation();
-  const isSubmitting = Boolean(state === "submitting" || state === "loading");
+  const isPending = Boolean(state === "submitting" || state === "loading");
 
-  const { handleSubmit, register, formState } = useRemixForm<FormType>({
+  const form = useRemixForm<FormType>({
     resolver,
   });
 
@@ -95,49 +99,69 @@ const SignUpPage = () => {
           Enter your email, password and name to create an account
         </CardDescription>
       </CardHeader>
-      <Form method="post" onSubmit={handleSubmit}>
-        <CardContent>
-          <FormItems>
-            <FormItem>
-              <FormLabel>Email</FormLabel>
-              <Input placeholder="bla@mail.com" {...register("email")} />
-              {formState.errors.email && (
-                <FormMessage>{formState.errors.email.message}</FormMessage>
-              )}
-            </FormItem>
-
-            <FormItem>
-              <FormLabel>Password</FormLabel>
-              <Input type="password" {...register("password")} />
-              {formState.errors.password && (
-                <FormMessage>{formState.errors.password.message}</FormMessage>
-              )}
-            </FormItem>
-
-            <FormItem>
-              <FormLabel>Display Name</FormLabel>
-              <Input {...register("name")} />
-              {formState.errors.name && (
-                <FormMessage>{formState.errors.name.message}</FormMessage>
-              )}
-            </FormItem>
-          </FormItems>
-        </CardContent>
-
-        {response?.error && (
+      <Form method="post" onSubmit={form.handleSubmit}>
+        <RemixFormProvider {...form}>
           <CardContent>
-            <FormMessage>{response.error}</FormMessage>
-          </CardContent>
-        )}
+            <FormItems>
+              <FormField
+                control={form.control}
+                name="email"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Email</FormLabel>
+                    <FormControl>
+                      <Input {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-        <CardFooter>
-          <Button disabled={isSubmitting} type="submit">
-            Submit
-          </Button>
-          <Button variant="link" disabled={isSubmitting} asChild>
-            <Link to="/sign-in">Already Registered? Sign in here</Link>
-          </Button>
-        </CardFooter>
+              <FormField
+                control={form.control}
+                name="password"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Password</FormLabel>
+                    <FormControl>
+                      <Input type="password" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Display Name</FormLabel>
+                    <FormControl>
+                      <Input {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </FormItems>
+          </CardContent>
+
+          {response?.error && (
+            <CardContent>
+              <FormMessage>{response.error}</FormMessage>
+            </CardContent>
+          )}
+
+          <CardFooter>
+            <Button disabled={isPending} type="submit">
+              Submit
+            </Button>
+            <Button variant="link" disabled={isPending} asChild>
+              <Link to="/sign-in">Already Registered? Sign in here</Link>
+            </Button>
+          </CardFooter>
+        </RemixFormProvider>
       </Form>
     </Card>
   );

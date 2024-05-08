@@ -11,9 +11,13 @@ import {
   useNavigation,
   useRouteLoaderData,
 } from "@remix-run/react";
-import { getValidatedFormData, useRemixForm } from "remix-hook-form";
+import {
+  RemixFormProvider,
+  getValidatedFormData,
+  useRemixForm,
+} from "remix-hook-form";
 import { z } from "zod";
-import { authCookie } from "~/api/auth/authCookie";
+import { isAuthenticated } from "~/api/auth";
 import {
   Button,
   Card,
@@ -22,7 +26,10 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
+  FormControl,
+  FormField,
   FormItem,
+  FormItems,
   FormLabel,
   FormMessage,
   Input,
@@ -46,27 +53,24 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     return json({ errors, receivedValues, success: false, error: null });
   }
 
-  let cookieString = request.headers.get("Cookie");
-  let userId = await authCookie.parse(cookieString);
-  if (!userId) {
-    return redirect("/");
+  const uid = await isAuthenticated(request);
+  if (!uid) {
+    return null;
   }
 
   // Update
   const { name } = data;
-  await updateUsersName(userId, name);
+  await updateUsersName(uid, name);
 
   return null;
 };
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
-  let cookieString = request.headers.get("Cookie");
-  let userId = await authCookie.parse(cookieString);
-  if (!userId) {
+  const uid = await isAuthenticated(request);
+  if (!uid) {
     return redirect("/");
   }
-
-  return {};
+  return true;
 };
 
 const AccountEditPage = () => {
@@ -74,9 +78,9 @@ const AccountEditPage = () => {
   const response = useActionData<typeof action>();
 
   const { state } = useNavigation();
-  const isSubmitting = Boolean(state === "submitting" || state === "loading");
+  const isPending = Boolean(state === "submitting" || state === "loading");
 
-  const { handleSubmit, register, formState } = useRemixForm<FormType>({
+  const form = useRemixForm<FormType>({
     resolver,
     defaultValues: {
       name: data?.user?.name,
@@ -85,28 +89,42 @@ const AccountEditPage = () => {
 
   return (
     <Card className="max-w-lg">
-      <Form method="post" onSubmit={handleSubmit}>
+      <Form method="post" onSubmit={form.handleSubmit}>
         <CardHeader>
           <CardTitle>Update details</CardTitle>
           <CardDescription>Change your account details</CardDescription>
         </CardHeader>
-        <CardContent>
-          <FormItem>
-            <FormLabel>Display Name</FormLabel>
-            <Input {...register("name")} />
-            {formState.errors.name && (
-              <FormMessage>{formState.errors.name.message}</FormMessage>
-            )}
-          </FormItem>
-        </CardContent>
-        <CardFooter>
-          <FormItem>
-            {response?.error && <FormMessage>{response.error}</FormMessage>}
-            <Button disabled={isSubmitting} type="submit">
+        <RemixFormProvider {...form}>
+          <CardContent>
+            <FormItems>
+              <FormField
+                control={form.control}
+                name="name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Name</FormLabel>
+                    <FormControl>
+                      <Input {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </FormItems>
+          </CardContent>
+
+          {response?.error && (
+            <CardContent>
+              <FormMessage>{response.error}</FormMessage>
+            </CardContent>
+          )}
+
+          <CardFooter>
+            <Button disabled={isPending} type="submit">
               Submit
             </Button>
-          </FormItem>
-        </CardFooter>
+          </CardFooter>
+        </RemixFormProvider>
       </Form>
     </Card>
   );
