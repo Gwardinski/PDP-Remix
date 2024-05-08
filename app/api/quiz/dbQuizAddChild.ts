@@ -2,45 +2,66 @@ import { db } from "../db";
 import { quizToRound } from "../schema";
 
 // Get selected Round, and ids for any Quizzes it has already been added to
-type QuizAddChildGetRoundProps = {
+type QuizAddRoundGetRoundProps = {
   uid: number;
   rid: number;
 };
-export const dbQuizAddChildGetChild = async ({
+export const dbQuizAddRoundGetRound = async ({
   uid,
   rid,
-}: QuizAddChildGetRoundProps) => {
+}: QuizAddRoundGetRoundProps) => {
   return await db.query.Round.findFirst({
+    where: (round, { and, eq }) => and(eq(round.id, rid), eq(round.uid, uid)),
     with: {
       quizRounds: true,
     },
-    where: (rounds, { and, eq }) =>
-      and(eq(rounds.id, rid), eq(rounds.uid, uid)),
   });
 };
 
-// Gets list of users Quizzes, filtered by any zids the Round is already part of
-type QuizGetPossibleRoundParentsProps = {
+// Gets list of users Quizzes, filtered by any rids the Round is already part of
+type QuizAddRoundGetQuizzesProps = {
   uid: number;
   query: string;
   currentZids: number[];
 };
-export const dbQuizAddChildGet = async ({
+export const dbQuizAddRoundGetQuizzes = async ({
   uid,
   query,
   currentZids,
-}: QuizGetPossibleRoundParentsProps) => {
-  return await db.query.Quiz.findMany({
-    where: (quizzes, { eq, ilike, and, notInArray }) => {
+}: QuizAddRoundGetQuizzesProps) => {
+  const quizzes = await db.query.Quiz.findMany({
+    where: (quiz, { eq, ilike, and, notInArray }) => {
       if (currentZids.length === 0) {
-        return and(eq(quizzes.uid, uid), ilike(quizzes.title, `%${query}%`));
+        return and(
+          eq(quiz.uid, uid),
+          eq(quiz.published, false),
+          ilike(quiz.title, `%${query}%`),
+        );
       }
       return and(
-        eq(quizzes.uid, uid),
-        ilike(quizzes.title, `%${query}%`),
-        notInArray(quizzes.id, currentZids),
+        eq(quiz.uid, uid),
+        eq(quiz.published, false),
+        ilike(quiz.title, `%${query}%`),
+        notInArray(quiz.id, currentZids),
       );
     },
+    columns: {
+      id: true,
+      uid: true,
+      title: true,
+    },
+    with: {
+      quizRounds: true,
+    },
+  });
+
+  return quizzes.map((quiz) => {
+    return {
+      id: quiz.id,
+      uid: quiz.uid,
+      title: quiz.title,
+      noOfRounds: quiz.quizRounds.length,
+    };
   });
 };
 
@@ -50,40 +71,30 @@ type QuizAddChildProps = {
   zid: number;
   rid: number;
 };
-export const dbQuizAddChild = async ({ uid, zid, rid }: QuizAddChildProps) => {
+export const dbQuizAddRound = async ({ uid, zid, rid }: QuizAddChildProps) => {
   await db.transaction(async (tx) => {
-    // Check Quiz exists
-    const quizToUpdate = await tx.query.Quiz.findFirst({
-      where: (quizzes, { and, eq }) =>
-        and(eq(quizzes.id, zid), eq(quizzes.uid, uid)),
-    });
-    if (!quizToUpdate) {
-      return false;
-    }
-
-    // Check Round exists
-    const roundToUpdate = await tx.query.Round.findFirst({
-      where: (rounds, { and, or, eq }) =>
+    // Check Round exists and is either owned or published
+    const round = await db.query.Round.findFirst({
+      where: (round, { and, eq, or }) =>
         and(
-          eq(rounds.id, rid),
-          or(eq(rounds.uid, uid), eq(rounds.published, true)),
+          eq(round.id, rid),
+          or(eq(round.uid, uid), eq(round.published, true)),
         ),
     });
-    if (!roundToUpdate) {
+    if (!round) {
       return false;
     }
 
-    // Check link doesn't exist
-    const existingLink = await tx.query.quizToRound.findFirst({
-      where: (quizToRound, { and, eq }) =>
-        and(eq(quizToRound.zid, zid), eq(quizToRound.rid, rid)),
+    // Check Quiz exists and is owned
+    const quiz = await db.query.Quiz.findFirst({
+      where: (quiz, { and, eq }) => and(eq(quiz.id, zid), eq(quiz.uid, uid)),
     });
-    if (existingLink) {
+    if (!quiz) {
       return false;
     }
 
-    // Create the link
-    await tx.insert(quizToRound).values({ zid: zid, rid: rid });
+    // Create link between Quiz and Round
+    await tx.insert(quizToRound).values({ rid: rid, zid: zid });
   });
 
   return true;

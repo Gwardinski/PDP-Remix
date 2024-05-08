@@ -4,6 +4,7 @@ import { roundToQuestion } from "../schema";
 export const dbRoundGet = async (rid: number) => {
   // Add user id and check for ownership / permissions / isPublished
   return await db.query.Round.findFirst({
+    where: (round, { eq }) => eq(round.id, rid),
     with: {
       quizRounds: true,
       roundQuestions: {
@@ -12,45 +13,58 @@ export const dbRoundGet = async (rid: number) => {
         },
       },
     },
-
-    where: (round, { eq }) => eq(round.id, rid),
   });
 };
 
-export const dbRoundsGetLibrary = async (
-  uid: number,
-  query: string = "",
-  filterRids: number[] = [],
-) => {
-  return await db.query.Round.findMany({
+export const dbRoundsGetLibrary = async (uid: number, query: string = "") => {
+  const rounds = await db.query.Round.findMany({
+    where: (round, { eq, ilike, and }) => {
+      return and(eq(round.uid, uid), ilike(round.title, `%${query}%`));
+    },
     with: {
       quizRounds: true,
       roundQuestions: true,
     },
+  });
 
-    where: (round, { eq, ilike, and, notInArray }) => {
-      if (filterRids.length === 0) {
-        return and(eq(round.uid, uid), ilike(round.title, `%${query}%`));
-      }
-      return and(
-        eq(round.uid, uid),
-        ilike(round.title, `%${query}%`),
-        notInArray(round.id, filterRids),
-      );
-    },
+  return rounds.map((r) => {
+    return {
+      id: r.id,
+      uid: r.uid,
+      title: r.title,
+      description: r.description,
+      published: r.published,
+      updatedAt: r.updatedAt,
+      createdAt: r.createdAt,
+      noOfQuestions: r.roundQuestions.length,
+      noOfQuizzes: r.quizRounds.length,
+    };
   });
 };
 
 export const dbRoundsGetRecent = async (uid: number) => {
-  return await db.query.Round.findMany({
+  const rounds = await db.query.Round.findMany({
+    where: (round, { eq }) => eq(round.uid, uid),
+    orderBy: (round, { desc }) => desc(round.updatedAt),
+    limit: 6,
     with: {
       quizRounds: true,
       roundQuestions: true,
     },
+  });
 
-    where: (round, { eq }) => eq(round.uid, uid),
-    orderBy: (round, { desc }) => desc(round.updatedAt),
-    limit: 6,
+  return rounds.map((r) => {
+    return {
+      id: r.id,
+      uid: r.uid,
+      title: r.title,
+      description: r.description,
+      published: r.published,
+      updatedAt: r.updatedAt,
+      createdAt: r.createdAt,
+      noOfQuestions: r.roundQuestions.length,
+      noOfQuizzes: r.quizRounds.length,
+    };
   });
 };
 

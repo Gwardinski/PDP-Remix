@@ -40,7 +40,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
   });
 }
 
-const QuestionLibraryPage = () => {
+const LibraryQuestionPage = () => {
   const { questions, q } = useLoaderData<typeof loader>();
 
   const [query, setQuery] = useState(q || "");
@@ -103,4 +103,4 @@ const QuestionLibraryPage = () => {
   );
 };
 
-export default QuestionLibraryPage;
+export default LibraryQuestionPage;

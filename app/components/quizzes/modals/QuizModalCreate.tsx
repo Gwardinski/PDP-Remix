@@ -1,29 +1,11 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  ActionFunctionArgs,
-  LoaderFunctionArgs,
-  redirect,
-} from "@remix-run/node";
-import {
-  Form,
-  json,
-  useActionData,
-  useNavigate,
-  useNavigation,
-} from "@remix-run/react";
-import {
-  RemixFormProvider,
-  getValidatedFormData,
-  useRemixForm,
-} from "remix-hook-form";
+import { Form, useNavigate, useNavigation } from "@remix-run/react";
+import { RemixFormProvider, useRemixForm } from "remix-hook-form";
 import { z } from "zod";
-import { isAuthenticated } from "~/api/auth";
-import { dbQuizCreate } from "~/api/quiz";
 import {
   Button,
   Dialog,
   DialogContent,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
   FormControl,
@@ -36,49 +18,28 @@ import {
   Textarea,
 } from "~/components/ui";
 
-const formSchema = z.object({
-  title: z.string().min(1).max(100),
-  description: z.string().max(400).default(""),
+const QuizCreateFormSchema = z.object({
+  title: z.string().min(2).max(220),
+  description: z.string().min(1).max(220),
 });
-const resolver = zodResolver(formSchema);
-type QuizCreateFormType = z.infer<typeof formSchema>;
+export const createQuizResolver = zodResolver(QuizCreateFormSchema);
+export type QuizCreateFormType = z.infer<typeof QuizCreateFormSchema>;
 
-export const action = async ({ request }: ActionFunctionArgs) => {
-  // Validate Form Data
-  const { receivedValues, errors, data } =
-    await getValidatedFormData<QuizCreateFormType>(request, resolver);
-  if (errors) {
-    return json({ errors, receivedValues, success: false, error: null }, 400);
-  }
-
-  // Create Question
-  const uid = await isAuthenticated(request);
-  await dbQuizCreate({
-    ...data,
-    uid: uid ?? 0,
-  });
-
-  // Close Modal
-  return redirect("/library/quizzes");
+type QuizModalCreateProps = {
+  redirectPath: string;
+  actionError?: string;
 };
 
-export const loader = async ({ request }: LoaderFunctionArgs) => {
-  const uid = await isAuthenticated(request);
-  if (!uid) {
-    return redirect("/");
-  }
-  return true;
-};
-
-const QuizCreatePage = () => {
-  const actionRes = useActionData<typeof action>();
-
+export const QuizModalCreate: React.FC<QuizModalCreateProps> = ({
+  redirectPath,
+  actionError,
+}) => {
   const form = useRemixForm<QuizCreateFormType>({
-    resolver,
+    resolver: createQuizResolver,
   });
 
   const navigate = useNavigate();
-  const closeModal = () => navigate(-1);
+  const closeModal = () => navigate(redirectPath, { replace: true });
 
   const { state } = useNavigation();
   const isPending = Boolean(state === "submitting" || state === "loading");
@@ -89,7 +50,6 @@ const QuizCreatePage = () => {
         <DialogHeader>
           <DialogTitle>Create Quiz</DialogTitle>
         </DialogHeader>
-
         <Form method="post" onSubmit={form.handleSubmit}>
           <RemixFormProvider {...form}>
             <FormItems>
@@ -98,7 +58,7 @@ const QuizCreatePage = () => {
                 name="title"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Quiz Name</FormLabel>
+                    <FormLabel>Title</FormLabel>
                     <FormControl>
                       <Input {...field} />
                     </FormControl>
@@ -119,20 +79,20 @@ const QuizCreatePage = () => {
                   </FormItem>
                 )}
               />
-            </FormItems>
 
-            {actionRes?.error && <FormMessage>{actionRes.error}</FormMessage>}
+              {actionError && <FormMessage>{actionError}</FormMessage>}
 
-            <DialogFooter>
-              <Button disabled={isPending} type="submit" className="w-full">
+              <Button
+                disabled={isPending}
+                type="submit"
+                className="mt-4 w-full"
+              >
                 Create Quiz
               </Button>
-            </DialogFooter>
+            </FormItems>
           </RemixFormProvider>
         </Form>
       </DialogContent>
     </Dialog>
   );
 };
-
-export default QuizCreatePage;

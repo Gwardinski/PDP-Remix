@@ -1,20 +1,19 @@
 import {
   ActionFunctionArgs,
   LoaderFunctionArgs,
-  json,
   redirect,
 } from "@remix-run/node";
-import { useActionData } from "@remix-run/react";
+import { json, useActionData } from "@remix-run/react";
 import { getValidatedFormData } from "remix-hook-form";
 import { isAuthenticated } from "~/api/auth";
-import { dbQuestionCreate } from "~/api/question";
+import { dbRoundCreate } from "~/api/round";
 import {
-  QuestionCreateFormType,
-  QuestionModalCreate,
-  createQuestionResolver,
-} from "~/components/questions/modals";
+  RoundCreateFormType,
+  RoundModalCreate,
+  createRoundResolver,
+} from "~/components/rounds/modals";
 
-const BASE_PATH = "/library/questions";
+const BASE_PATH = "/library/rounds";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const uid = await isAuthenticated(request);
@@ -27,9 +26,9 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 export const action = async ({ request }: ActionFunctionArgs) => {
   // Validate Form Data
   const { receivedValues, errors, data } =
-    await getValidatedFormData<QuestionCreateFormType>(
+    await getValidatedFormData<RoundCreateFormType>(
       request,
-      createQuestionResolver,
+      createRoundResolver,
     );
   if (errors) {
     return json({ errors, receivedValues, success: false, error: null }, 400);
@@ -40,21 +39,22 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   if (!uid) {
     return redirect(BASE_PATH);
   }
-  await dbQuestionCreate({
+  await dbRoundCreate({
     ...data,
     uid,
   });
 
-  return redirect(BASE_PATH);
+  // Close Modal
+  return redirect("/library/rounds");
 };
 
-const QuestionCreatePage = () => {
+const RoundCreatePage = () => {
   const actionRes = useActionData<typeof action>();
   const actionError = actionRes?.error ?? "";
 
   return (
-    <QuestionModalCreate redirectPath={BASE_PATH} actionError={actionError} />
+    <RoundModalCreate redirectPath={BASE_PATH} actionError={actionError} />
   );
 };
 
-export default QuestionCreatePage;
+export default RoundCreatePage;

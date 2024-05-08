@@ -32,11 +32,11 @@ export const dbQuizGet = async ({ zid, uid }: { zid: number; uid: number }) => {
   return formatQuiz(quiz);
 };
 
-export const dbQuizzesGetRecent = async (uid: number) => {
+export const dbQuizGetLibrary = async (uid: number, q: string = "") => {
   const quizzes = await db.query.Quiz.findMany({
-    where: eq(Quiz.uid, uid),
-    orderBy: (quizzes, { desc }) => desc(quizzes.updatedAt),
-    limit: 6,
+    where: (quizzes, { eq, ilike, and }) => {
+      return and(eq(quizzes.uid, uid), ilike(quizzes.title, `%${q}%`));
+    },
     with: {
       quizRounds: {
         columns: {},
@@ -67,11 +67,11 @@ export const dbQuizzesGetRecent = async (uid: number) => {
   return formatQuizzes(quizzes);
 };
 
-export const dbQuizGetLibrary = async (uid: number, q: string = "") => {
+export const dbQuizzesGetRecent = async (uid: number) => {
   const quizzes = await db.query.Quiz.findMany({
-    where: (quizzes, { eq, ilike, and }) => {
-      return and(eq(quizzes.uid, uid), ilike(quizzes.title, `%${q}%`));
-    },
+    where: eq(Quiz.uid, uid),
+    orderBy: (quizzes, { desc }) => desc(quizzes.updatedAt),
+    limit: 6,
     with: {
       quizRounds: {
         columns: {},

@@ -1,20 +1,19 @@
 import {
   ActionFunctionArgs,
   LoaderFunctionArgs,
-  json,
   redirect,
 } from "@remix-run/node";
-import { useActionData } from "@remix-run/react";
+import { json, useActionData } from "@remix-run/react";
 import { getValidatedFormData } from "remix-hook-form";
 import { isAuthenticated } from "~/api/auth";
-import { dbQuestionCreate } from "~/api/question";
+import { dbQuizCreate } from "~/api/quiz";
 import {
-  QuestionCreateFormType,
-  QuestionModalCreate,
-  createQuestionResolver,
-} from "~/components/questions/modals";
+  QuizCreateFormType,
+  QuizModalCreate,
+  createQuizResolver,
+} from "~/components/quizzes/modals";
 
-const BASE_PATH = "/library/questions";
+const BASE_PATH = "/library/quizzes";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const uid = await isAuthenticated(request);
@@ -27,10 +26,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 export const action = async ({ request }: ActionFunctionArgs) => {
   // Validate Form Data
   const { receivedValues, errors, data } =
-    await getValidatedFormData<QuestionCreateFormType>(
-      request,
-      createQuestionResolver,
-    );
+    await getValidatedFormData<QuizCreateFormType>(request, createQuizResolver);
   if (errors) {
     return json({ errors, receivedValues, success: false, error: null }, 400);
   }
@@ -40,21 +36,20 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   if (!uid) {
     return redirect(BASE_PATH);
   }
-  await dbQuestionCreate({
+  await dbQuizCreate({
     ...data,
     uid,
   });
 
-  return redirect(BASE_PATH);
+  // Close Modal
+  return redirect("/library/quizzes");
 };
 
-const QuestionCreatePage = () => {
+const QuizCreatePage = () => {
   const actionRes = useActionData<typeof action>();
   const actionError = actionRes?.error ?? "";
 
-  return (
-    <QuestionModalCreate redirectPath={BASE_PATH} actionError={actionError} />
-  );
+  return <QuizModalCreate redirectPath={BASE_PATH} actionError={actionError} />;
 };
 
-export default QuestionCreatePage;
+export default QuizCreatePage;

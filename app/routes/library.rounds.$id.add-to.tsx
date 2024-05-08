@@ -6,40 +6,40 @@ import {
 import { useActionData, useLoaderData } from "@remix-run/react";
 import { isAuthenticated } from "~/api/auth";
 import {
-  dbRoundAddQuestion,
-  dbRoundAddQuestionGetQuestion,
-  dbRoundAddQuestionGetRounds,
-} from "~/api/round";
-import { QuestionModalAddTo } from "~/components/questions/modals";
+  dbQuizAddRound,
+  dbQuizAddRoundGetQuizzes,
+  dbQuizAddRoundGetRound,
+} from "~/api/quiz";
+import { RoundModalAddTo } from "~/components/rounds/modals/RoundModalAddTo";
 
-const BASE_PATH = "/library/questions";
+const BASE_PATH = "/library/rounds";
 
 export const loader = async ({ request, params }: LoaderFunctionArgs) => {
   const uid = await isAuthenticated(request);
   if (!uid) {
     return redirect("/");
   }
-  const qid = Number(params.id);
-  if (!qid) {
+  const rid = Number(params.id);
+  if (!rid) {
     return redirect(BASE_PATH);
   }
 
-  const question = await dbRoundAddQuestionGetQuestion({ uid, qid });
-  if (!question || question.uid !== uid) {
+  const round = await dbQuizAddRoundGetRound({ uid, rid });
+  if (!round || round.uid !== uid) {
     return redirect(BASE_PATH);
   }
 
-  const r = new URL(request.url).searchParams.get("r") ?? "";
-  const currentRids = question.roundQuestions.map((rq) => rq.rid) ?? [0];
-  const rounds = await dbRoundAddQuestionGetRounds({
+  const z = new URL(request.url).searchParams.get("z") ?? "";
+  const currentZids = round.quizRounds.map((qr) => qr.zid) ?? [0];
+  const quizzes = await dbQuizAddRoundGetQuizzes({
     uid,
-    query: r,
-    currentRids,
+    query: z,
+    currentZids,
   });
 
-  const noRounds = rounds.length === 0 && !r;
+  const noQuizzes = quizzes.length === 0 && !z;
 
-  return { question, rounds, r, noRounds };
+  return { round, quizzes, z, noQuizzes };
 };
 
 export const action = async ({ request, params }: ActionFunctionArgs) => {
@@ -48,16 +48,16 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
   if (!uid) {
     return;
   }
-  const qid = Number(params.id);
-  if (!qid) {
+  const rid = Number(params.id);
+  if (!rid) {
     return redirect(BASE_PATH);
   }
   const formData = await request.formData();
-  const selectedRound = formData.get("selectedRound");
-  await dbRoundAddQuestion({
+  const selectedQuiz = formData.get("selectedQuiz");
+  await dbQuizAddRound({
     uid,
-    qid,
-    rid: Number(selectedRound),
+    rid,
+    zid: Number(selectedQuiz),
   });
 
   // Close Modal
@@ -68,16 +68,16 @@ const LibraryQuestionAddToPage = () => {
   // TODO: ErrorHandling
   const actionRes = useActionData<typeof action>();
   const loaderRes = useLoaderData<typeof loader>();
-  const { question, rounds, r, noRounds } = loaderRes;
+  const { round, quizzes, z, noQuizzes } = loaderRes;
 
   return (
-    <QuestionModalAddTo
-      r={r}
-      title={question.title}
-      noRounds={noRounds}
+    <RoundModalAddTo
+      z={z}
+      title={round.title}
+      noQuizzes={noQuizzes}
       errorMessage={""}
       basePath={BASE_PATH}
-      rounds={rounds}
+      quizzes={quizzes}
     />
   );
 };

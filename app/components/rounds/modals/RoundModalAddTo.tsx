@@ -1,6 +1,6 @@
 import { Form, useNavigate, useNavigation, useSubmit } from "@remix-run/react";
 import { useEffect, useState } from "react";
-import { RoundAddQuestionItem } from "~/components/rounds";
+import { QuizAddRoundItem } from "~/components/quizzes";
 import {
   Button,
   Dialog,
@@ -12,32 +12,31 @@ import {
   Input,
 } from "~/components/ui";
 
-type QuestionModalAddToProps = {
-  r: string;
+type RoundModalAddToProps = {
+  z: string;
   title: string;
-  noRounds: boolean;
+  noQuizzes: boolean;
   errorMessage: string;
   basePath: string;
-  rounds: {
+  quizzes: {
     id: number;
     uid: number;
     title: string;
-    noOfQuestions: number;
-    noOfQuizzes: number;
+    noOfRounds: number;
   }[];
 };
-export const QuestionModalAddTo: React.FC<QuestionModalAddToProps> = ({
-  r,
-  noRounds,
+export const RoundModalAddTo: React.FC<RoundModalAddToProps> = ({
+  z,
+  noQuizzes,
   errorMessage,
   basePath,
-  rounds,
+  quizzes,
 }) => {
-  const [query, setQuery] = useState(r || "");
+  const [query, setQuery] = useState(z || "");
 
   useEffect(() => {
-    setQuery(r || "");
-  }, [r]);
+    setQuery(z || "");
+  }, [z]);
 
   const submit = useSubmit();
 
@@ -51,14 +50,14 @@ export const QuestionModalAddTo: React.FC<QuestionModalAddToProps> = ({
     <Dialog open onOpenChange={closeModal}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Add Question to Round</DialogTitle>
+          <DialogTitle>Add Round to Quiz</DialogTitle>
         </DialogHeader>
 
-        {noRounds && (
-          <p>This Question is already part of all available Rounds.</p>
+        {noQuizzes && (
+          <p>This Round is already part of all available Quizzes.</p>
         )}
 
-        {!noRounds && (
+        {!noQuizzes && (
           <>
             <div className="flex flex-col justify-between gap-4">
               <Form
@@ -68,11 +67,11 @@ export const QuestionModalAddTo: React.FC<QuestionModalAddToProps> = ({
                 role="search"
               >
                 <Input
-                  aria-label="Search Rounds"
-                  defaultValue={r || ""}
-                  id="r"
-                  name="r"
-                  placeholder="Search your Rounds"
+                  aria-label="Search Quizzes"
+                  defaultValue={z || ""}
+                  id="z"
+                  name="z"
+                  placeholder="Search your Quizzes"
                   type="search"
                   value={query}
                   onChange={(event) => setQuery(event.currentTarget.value)}
@@ -84,16 +83,15 @@ export const QuestionModalAddTo: React.FC<QuestionModalAddToProps> = ({
               <div className="flex flex-col gap-2">
                 {errorMessage && <FormMessage>{errorMessage}</FormMessage>}
 
-                {rounds.map(({ id, title, noOfQuestions, noOfQuizzes }) => (
-                  <RoundAddQuestionItem
+                {quizzes.map(({ id, title, noOfRounds }) => (
+                  <QuizAddRoundItem
                     key={id}
-                    name="selectedRound"
+                    name="selectedQuiz"
                     value={id}
                     type="submit"
                     disabled={isPending}
                     title={title}
-                    noOfQuestions={noOfQuestions}
-                    noOfQuizzes={noOfQuizzes}
+                    noOfRounds={noOfRounds}
                   />
                 ))}
               </div>

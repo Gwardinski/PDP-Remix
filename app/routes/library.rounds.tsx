@@ -1,25 +1,26 @@
-import { LoaderFunctionArgs, json, redirect } from "@remix-run/node";
+import { LoaderFunctionArgs, redirect } from "@remix-run/node";
 import {
   Form,
   Link,
   MetaFunction,
   Outlet,
   useLoaderData,
+  useNavigation,
   useSubmit,
 } from "@remix-run/react";
 import { useEffect, useState } from "react";
 import { isAuthenticated } from "~/api/auth";
-import { dbQuizGetLibrary } from "~/api/quiz";
+import { dbRoundsGetLibrary } from "~/api/round";
 import { PageContent, PageContentHeader } from "~/components/layout";
-import { QuizGrid, QuizItemLibrary } from "~/components/quizzes";
+import { RoundGrid, RoundItemLibrary } from "~/components/rounds";
 import { Button, Input } from "~/components/ui";
 
 export const meta: MetaFunction = () => {
   return [
-    { title: "Quiz Library" },
+    { title: "Round Library" },
     {
-      name: "Quiz Library",
-      content: "Your Quiz Library",
+      name: "Round Library",
+      content: "Your Round Library",
     },
   ];
 };
@@ -29,19 +30,20 @@ export async function loader({ request }: LoaderFunctionArgs) {
   if (!uid) {
     return redirect("/");
   }
-
   const q = new URL(request.url).searchParams.get("q") ?? "";
 
-  const quizzes = await dbQuizGetLibrary(uid, q);
+  const rounds = await dbRoundsGetLibrary(uid, q);
 
-  return json({
-    quizzes,
+  return {
+    rounds,
     q,
-  });
+  };
 }
 
-const QuizLibraryPage = () => {
-  const { quizzes, q } = useLoaderData<typeof loader>();
+const LibraryRoundPage = () => {
+  const { rounds, q } = useLoaderData<typeof loader>();
+  const { state } = useNavigation();
+  const isPending = Boolean(state === "loading");
 
   const [query, setQuery] = useState(q || "");
 
@@ -61,7 +63,7 @@ const QuizLibraryPage = () => {
           className="w-full"
         >
           <Input
-            aria-label="Search Quizzes"
+            aria-label="Search Rounds"
             defaultValue={q || ""}
             id="q"
             name="q"
@@ -72,29 +74,30 @@ const QuizLibraryPage = () => {
           />
         </Form>
         <Button asChild>
-          <Link to={"/library/quizzes/create"}>Create Quiz</Link>
+          <Link to={"/library/rounds/create"}>Create Round</Link>
         </Button>
       </PageContentHeader>
 
-      <QuizGrid>
-        {quizzes.map((z) => (
-          <QuizItemLibrary
-            key={z.id}
-            id={z.id}
-            title={z.title}
-            description={z.description}
-            noOfRounds={z.noOfRounds}
-            noOfQuestions={z.noOfQuestions}
-            createdAt={z.createdAt}
-            updatedAt={z.updatedAt}
-            published={z.published}
+      <RoundGrid>
+        {rounds.map((r) => (
+          <RoundItemLibrary
+            key={r.id}
+            id={r.id}
+            title={r.title}
+            description={r.description}
+            createdAt={r.createdAt}
+            updatedAt={r.updatedAt}
+            noOfQuestions={r.noOfQuestions}
+            noOfQuizzes={r.noOfQuizzes}
+            published={r.published}
+            isPending={isPending}
           />
         ))}
-      </QuizGrid>
+      </RoundGrid>
 
       <Outlet />
     </PageContent>
   );
 };
 
-export default QuizLibraryPage;
+export default LibraryRoundPage;

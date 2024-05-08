@@ -33,8 +33,6 @@ export async function loader({ request }: LoaderFunctionArgs) {
   const quizzes = await dbQuizzesGetRecent(uid);
   const rounds = await dbRoundsGetRecent(uid);
   const questions = await dbQuestionsGetRecent(uid);
-  // const quizzesIncomplete = await dbQuizzesGetIncomplete(uid);
-  // const roundsIncomplete = await dbRoundsGetIncomplete(uid);
 
   return json({
     quizzes,
@@ -92,8 +90,8 @@ const LibraryRecentPage = () => {
                 description={r.description}
                 createdAt={r.createdAt}
                 updatedAt={r.updatedAt}
-                noOfQuestions={0}
-                noOfQuizzes={0}
+                noOfQuestions={r.noOfQuestions}
+                noOfQuizzes={r.noOfQuizzes}
                 published={r.published}
                 isPending={false}
               />
