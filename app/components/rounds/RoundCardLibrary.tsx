@@ -4,7 +4,7 @@ import { format } from "date-fns";
 import { IconEyeCheck } from "@tabler/icons-react";
 import { Button, H4 } from "../ui";
 
-type RoundItemLibraryProps = {
+type RoundCardLibraryProps = {
   id: number;
   title: string;
   description: string | null;
@@ -14,8 +14,9 @@ type RoundItemLibraryProps = {
   noOfQuizzes: number;
   published: boolean;
   isPending: boolean;
+  addToPath: string;
 };
-export const RoundItemLibrary: React.FC<RoundItemLibraryProps> = ({
+export const RoundCardLibrary: React.FC<RoundCardLibraryProps> = ({
   id,
   title,
   description,
@@ -25,6 +26,7 @@ export const RoundItemLibrary: React.FC<RoundItemLibraryProps> = ({
   noOfQuizzes,
   published,
   isPending,
+  addToPath,
 }) => {
   return (
     <div className="flex flex-col rounded-xl border border-zinc-700">
@@ -65,7 +67,7 @@ export const RoundItemLibrary: React.FC<RoundItemLibraryProps> = ({
           asChild
           className="w-full overflow-hidden rounded-b-xl rounded-t-none border-none"
         >
-          <Link to={`/library/rounds/${id}/add-to`}>Add To Quiz</Link>
+          <Link to={addToPath}>Add To Quiz</Link>
         </Button>
       </div>
     </div>

@@ -11,7 +11,7 @@ import {
 } from "~/components/layout";
 import { QuestionItemLibrary } from "~/components/questions";
 import { QuizGrid, QuizItemLibrary } from "~/components/quizzes";
-import { RoundGrid, RoundItemLibrary } from "~/components/rounds";
+import { RoundCardLibrary, RoundGrid } from "~/components/rounds";
 import { Accordion, Button, H2 } from "~/components/ui";
 
 export const meta: MetaFunction = () => {
@@ -83,7 +83,7 @@ const LibraryRecentPage = () => {
           </PageSectionHeader>
           <RoundGrid>
             {rounds.map((r) => (
-              <RoundItemLibrary
+              <RoundCardLibrary
                 key={r.id}
                 id={r.id}
                 title={r.title}
@@ -94,6 +94,7 @@ const LibraryRecentPage = () => {
                 noOfQuizzes={r.noOfQuizzes}
                 published={r.published}
                 isPending={false}
+                addToPath={`/library/recent/rounds/${r.id}/add-to`}
               />
             ))}
           </RoundGrid>

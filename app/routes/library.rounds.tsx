@@ -12,7 +12,7 @@ import { useEffect, useState } from "react";
 import { isAuthenticated } from "~/api/auth";
 import { dbRoundsGetLibrary } from "~/api/round";
 import { PageContent, PageContentHeader } from "~/components/layout";
-import { RoundGrid, RoundItemLibrary } from "~/components/rounds";
+import { RoundCardLibrary, RoundGrid } from "~/components/rounds";
 import { Button, Input } from "~/components/ui";
 
 export const meta: MetaFunction = () => {
@@ -80,7 +80,7 @@ const LibraryRoundPage = () => {
 
       <RoundGrid>
         {rounds.map((r) => (
-          <RoundItemLibrary
+          <RoundCardLibrary
             key={r.id}
             id={r.id}
             title={r.title}
@@ -91,6 +91,7 @@ const LibraryRoundPage = () => {
             noOfQuizzes={r.noOfQuizzes}
             published={r.published}
             isPending={isPending}
+            addToPath={`/library/rounds/${r.id}/add-to`}
           />
         ))}
       </RoundGrid>
