@@ -1,4 +1,5 @@
-import { Form, useNavigate, useNavigation } from "@remix-run/react";
+import { Form, useNavigate } from "@remix-run/react";
+import { useIsPending } from "~/components/layout";
 import {
   Button,
   Dialog,
@@ -24,8 +25,7 @@ export const QuestionModalPublish: React.FC<QuestionModalPublishProps> = ({
   const navigate = useNavigate();
   const closeModal = () => navigate(basePath, { replace: true });
 
-  const { state } = useNavigation();
-  const isPending = Boolean(state === "submitting" || state === "loading");
+  const { isPending } = useIsPending();
 
   return (
     <Dialog open onOpenChange={closeModal}>
@@ -34,8 +34,11 @@ export const QuestionModalPublish: React.FC<QuestionModalPublishProps> = ({
           <DialogTitle>Publish Question</DialogTitle>
         </DialogHeader>
         <Form method="post">
-          <p>Are you sure you wish to publish this Question?</p>
-          <p>{title}</p>
+          <div className="flex flex-col gap-4">
+            <p>Are you sure you wish to publish this Question?</p>
+            <p>{title}</p>
+            {errorMessage && <FormMessage>{errorMessage}</FormMessage>}
+          </div>
 
           {errorMessage && <FormMessage>{errorMessage}</FormMessage>}
 

@@ -4,13 +4,7 @@ import {
   LoaderFunctionArgs,
   redirect,
 } from "@remix-run/node";
-import {
-  Form,
-  Link,
-  json,
-  useActionData,
-  useNavigation,
-} from "@remix-run/react";
+import { Form, Link, json, useActionData } from "@remix-run/react";
 import {
   RemixFormProvider,
   getValidatedFormData,
@@ -22,6 +16,7 @@ import {
   dbSignInWithEmailAndPassword,
   isAuthenticated,
 } from "~/api/auth";
+import { useIsPending } from "~/components/layout";
 import {
   Button,
   Card,
@@ -85,8 +80,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 const SignInPage = () => {
   const response = useActionData<typeof action>();
 
-  const { state } = useNavigation();
-  const isPending = Boolean(state === "submitting" || state === "loading");
+  const { isPending } = useIsPending();
 
   const form = useRemixForm<FormType>({
     resolver,

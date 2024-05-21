@@ -11,7 +11,7 @@ import { useEffect, useState } from "react";
 import { isAuthenticated } from "~/api/auth";
 import { dbQuizGetLibrary } from "~/api/quiz";
 import { PageContent, PageContentHeader } from "~/components/layout";
-import { QuizGrid, QuizItemLibrary } from "~/components/quizzes";
+import { QuizCardLibrary, QuizGrid } from "~/components/quizzes";
 import { Button, Input } from "~/components/ui";
 
 export const meta: MetaFunction = () => {
@@ -40,7 +40,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
   });
 }
 
-const LibraryQuizPage = () => {
+const LibraryQuizzes = () => {
   const { quizzes, q } = useLoaderData<typeof loader>();
 
   const [query, setQuery] = useState(q || "");
@@ -78,9 +78,9 @@ const LibraryQuizPage = () => {
 
       <QuizGrid>
         {quizzes.map((z) => (
-          <QuizItemLibrary
-            key={z.id}
-            id={z.id}
+          <QuizCardLibrary
+            key={z.zid}
+            zid={z.zid}
             title={z.title}
             description={z.description}
             noOfRounds={z.noOfRounds}
@@ -98,4 +98,4 @@ const LibraryQuizPage = () => {
   );
 };
 
-export default LibraryQuizPage;
+export default LibraryQuizzes;

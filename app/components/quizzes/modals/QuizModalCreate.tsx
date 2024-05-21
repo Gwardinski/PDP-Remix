@@ -1,7 +1,8 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Form, useNavigate, useNavigation } from "@remix-run/react";
+import { Form, useNavigate } from "@remix-run/react";
 import { RemixFormProvider, useRemixForm } from "remix-hook-form";
 import { z } from "zod";
+import { useIsPending } from "~/components/layout";
 import {
   Button,
   Dialog,
@@ -26,12 +27,12 @@ export const createQuizResolver = zodResolver(QuizCreateFormSchema);
 export type QuizCreateFormType = z.infer<typeof QuizCreateFormSchema>;
 
 type QuizModalCreateProps = {
-  redirectPath: string;
+  basePath: string;
   actionError?: string;
 };
 
 export const QuizModalCreate: React.FC<QuizModalCreateProps> = ({
-  redirectPath,
+  basePath,
   actionError,
 }) => {
   const form = useRemixForm<QuizCreateFormType>({
@@ -39,10 +40,9 @@ export const QuizModalCreate: React.FC<QuizModalCreateProps> = ({
   });
 
   const navigate = useNavigate();
-  const closeModal = () => navigate(redirectPath, { replace: true });
+  const closeModal = () => navigate(basePath, { replace: true });
 
-  const { state } = useNavigation();
-  const isPending = Boolean(state === "submitting" || state === "loading");
+  const { isPending } = useIsPending();
 
   return (
     <Dialog open onOpenChange={closeModal}>

@@ -79,7 +79,7 @@ export function H4({ className, ...props }: TextProps) {
   return (
     <h4
       className={cn(
-        "text-lg leading-6 text-zinc-800 dark:text-zinc-200",
+        "text-lg font-bold leading-6 text-zinc-800 dark:text-zinc-200",
         className,
       )}
       {...props}

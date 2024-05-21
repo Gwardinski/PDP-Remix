@@ -7,7 +7,7 @@ export function RoundGrid({
   return (
     <div
       className={cn(
-        "grid grid-cols-1 gap-4 lg:grid-cols-2 xl:grid-cols-3",
+        "grid grid-cols-1 gap-4 lg:grid-cols-3 xl:grid-cols-4",
         className,
       )}
       {...props}

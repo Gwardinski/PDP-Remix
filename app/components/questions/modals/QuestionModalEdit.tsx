@@ -1,5 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Form, useNavigate, useNavigation } from "@remix-run/react";
+import { Form, useNavigate } from "@remix-run/react";
 import { useState } from "react";
 import { RemixFormProvider, useRemixForm } from "remix-hook-form";
 import { z } from "zod";
@@ -8,6 +8,7 @@ import {
   QuestionCategoryType,
   QuestionCategoryValues,
 } from "~/api/types";
+import { useIsPending } from "~/components/layout";
 import {
   Button,
   Command,
@@ -46,7 +47,7 @@ export const EditQuestionResolver = zodResolver(QuestionEditFormSchema);
 export type QuestionEditFormType = z.infer<typeof QuestionEditFormSchema>;
 
 type QuestionModalEditProps = {
-  redirectPath: string;
+  basePath: string;
   actionError?: string;
   question: {
     id: number;
@@ -65,7 +66,7 @@ type QuestionModalEditProps = {
 };
 
 export const QuestionModalEdit: React.FC<QuestionModalEditProps> = ({
-  redirectPath,
+  basePath,
   actionError,
   question,
 }) => {
@@ -84,10 +85,9 @@ export const QuestionModalEdit: React.FC<QuestionModalEditProps> = ({
   const [categoryOpen, setCategoryOpen] = useState(false);
 
   const navigate = useNavigate();
-  const closeModal = () => navigate(redirectPath, { replace: true });
+  const closeModal = () => navigate(basePath, { replace: true });
 
-  const { state } = useNavigation();
-  const isPending = Boolean(state === "submitting" || state === "loading");
+  const { isPending } = useIsPending();
 
   return (
     <Dialog open onOpenChange={closeModal}>

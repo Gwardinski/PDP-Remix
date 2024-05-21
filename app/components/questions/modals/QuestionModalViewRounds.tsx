@@ -1,6 +1,6 @@
 import { Form, useNavigate, useSubmit } from "@remix-run/react";
 import { useEffect, useState } from "react";
-import { RoundQuestionViewItem } from "~/components/rounds";
+import { RoundItemQuestion } from "~/components/rounds";
 import {
   Button,
   Dialog,
@@ -65,7 +65,7 @@ export const QuestionModalViewRounds: React.FC<
 
         <div className="flex flex-col gap-2">
           {rounds.map(({ id, title, noOfQuestions, noOfQuizzes }) => (
-            <RoundQuestionViewItem
+            <RoundItemQuestion
               key={id}
               rid={id}
               title={title}

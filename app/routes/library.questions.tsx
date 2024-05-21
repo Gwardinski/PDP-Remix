@@ -40,7 +40,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
   });
 }
 
-const LibraryQuestionPage = () => {
+const LibraryQuestion = () => {
   const { questions, q } = useLoaderData<typeof loader>();
 
   const [query, setQuery] = useState(q || "");
@@ -76,7 +76,7 @@ const LibraryQuestionPage = () => {
         </Button>
       </PageContentHeader>
 
-      <Accordion type="multiple" className="border-t border-zinc-900">
+      <Accordion type="multiple">
         {questions.map((q) => (
           <QuestionItemLibrary
             key={q.id}
@@ -103,4 +103,4 @@ const LibraryQuestionPage = () => {
   );
 };
 
-export default LibraryQuestionPage;
+export default LibraryQuestion;

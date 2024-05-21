@@ -1,13 +1,14 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { ActionFunctionArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
-import { Form, useActionData, useNavigation } from "@remix-run/react";
+import { Form, useActionData } from "@remix-run/react";
 import {
   RemixFormProvider,
   getValidatedFormData,
   useRemixForm,
 } from "remix-hook-form";
 import { z } from "zod";
+import { useIsPending } from "~/components/layout";
 import {
   Button,
   Card,
@@ -45,8 +46,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 const PasswordNewPage = () => {
   const response = useActionData<typeof action>();
 
-  const { state } = useNavigation();
-  const isPending = Boolean(state === "submitting" || state === "loading");
+  const { isPending } = useIsPending();
 
   const form = useRemixForm<FormType>({
     resolver,

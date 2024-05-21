@@ -45,11 +45,11 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   return redirect("/library/quizzes");
 };
 
-const QuizCreatePage = () => {
+const LibraryQuizzesCreate = () => {
   const actionRes = useActionData<typeof action>();
   const actionError = actionRes?.error ?? "";
 
-  return <QuizModalCreate redirectPath={BASE_PATH} actionError={actionError} />;
+  return <QuizModalCreate basePath={BASE_PATH} actionError={actionError} />;
 };
 
-export default QuizCreatePage;
+export default LibraryQuizzesCreate;

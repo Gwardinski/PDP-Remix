@@ -48,13 +48,11 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   return redirect("/library/rounds");
 };
 
-const RoundCreatePage = () => {
+const LibraryRoundsCreate = () => {
   const actionRes = useActionData<typeof action>();
   const actionError = actionRes?.error ?? "";
 
-  return (
-    <RoundModalCreate redirectPath={BASE_PATH} actionError={actionError} />
-  );
+  return <RoundModalCreate basePath={BASE_PATH} actionError={actionError} />;
 };
 
-export default RoundCreatePage;
+export default LibraryRoundsCreate;

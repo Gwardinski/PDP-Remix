@@ -48,13 +48,11 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   return redirect(BASE_PATH);
 };
 
-const QuestionCreatePage = () => {
+const LibraryQuestionCreatePage = () => {
   const actionRes = useActionData<typeof action>();
   const actionError = actionRes?.error ?? "";
 
-  return (
-    <QuestionModalCreate redirectPath={BASE_PATH} actionError={actionError} />
-  );
+  return <QuestionModalCreate basePath={BASE_PATH} actionError={actionError} />;
 };
 
-export default QuestionCreatePage;
+export default LibraryQuestionCreatePage;

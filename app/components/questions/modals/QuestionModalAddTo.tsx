@@ -1,6 +1,7 @@
-import { Form, useNavigate, useNavigation, useSubmit } from "@remix-run/react";
+import { Form, useNavigate, useSubmit } from "@remix-run/react";
 import { useEffect, useState } from "react";
-import { RoundAddQuestionItem } from "~/components/rounds";
+import { useIsPending } from "~/components/layout";
+import { RoundItemQuestionAdd } from "~/components/rounds";
 import {
   Button,
   Dialog,
@@ -44,8 +45,7 @@ export const QuestionModalAddTo: React.FC<QuestionModalAddToProps> = ({
   const navigate = useNavigate();
   const closeModal = () => navigate(basePath, { replace: true });
 
-  const { state } = useNavigation();
-  const isPending = Boolean(state === "submitting" || state === "loading");
+  const { isPending } = useIsPending();
 
   return (
     <Dialog open onOpenChange={closeModal}>
@@ -85,7 +85,7 @@ export const QuestionModalAddTo: React.FC<QuestionModalAddToProps> = ({
                 {errorMessage && <FormMessage>{errorMessage}</FormMessage>}
 
                 {rounds.map(({ id, title, noOfQuestions, noOfQuizzes }) => (
-                  <RoundAddQuestionItem
+                  <RoundItemQuestionAdd
                     key={id}
                     name="selectedRound"
                     value={id}

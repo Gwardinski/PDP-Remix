@@ -4,13 +4,7 @@ import {
   LoaderFunctionArgs,
   redirect,
 } from "@remix-run/node";
-import {
-  Form,
-  json,
-  useActionData,
-  useNavigate,
-  useNavigation,
-} from "@remix-run/react";
+import { Form, json, useActionData, useNavigate } from "@remix-run/react";
 import {
   RemixFormProvider,
   getValidatedFormData,
@@ -19,6 +13,7 @@ import {
 import { z } from "zod";
 import { isAuthenticated } from "~/api/auth";
 import { dbRoundCreateAsChild } from "~/api/round";
+import { useIsPending } from "~/components/layout";
 import {
   Button,
   Dialog,
@@ -52,7 +47,7 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
   }
 
   // Permissions Check
-  const zid = Number(params.id);
+  const zid = Number(params.zid);
   const uid = await isAuthenticated(request);
 
   if (!zid) {
@@ -85,11 +80,10 @@ const RoundCreateQuizPage = () => {
   const actionRes = useActionData<typeof action>();
 
   const navigate = useNavigate();
-  const { state } = useNavigation();
 
   const closeModal = () => navigate(-1);
 
-  const isPending = Boolean(state === "submitting" || state === "loading");
+  const { isPending } = useIsPending();
 
   const form = useRemixForm<RoundCreateFormType>({
     resolver,

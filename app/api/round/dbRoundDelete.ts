@@ -9,7 +9,8 @@ type RoundDeleteType = {
 export const dbRoundDelete = async ({ uid, rid }: RoundDeleteType) => {
   await db.transaction(async (tx) => {
     const roundToDelete = await db.query.Round.findFirst({
-      where: (round, { eq, and }) => and(eq(round.id, rid), eq(round.uid, uid)),
+      where: (round, { eq, and }) =>
+        and(eq(round.id, rid), eq(round.uid, uid), eq(round.published, false)),
     });
 
     if (!roundToDelete) {

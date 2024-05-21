@@ -21,8 +21,7 @@ import {
 import { Toaster } from "sonner";
 import stylesheet from "~/globals.css";
 import { dbGetAuthenticatedUser } from "./api/auth";
-import { AppDrawer } from "./components/layout/AppDrawer";
-import { AppHeader } from "./components/layout/AppHeader";
+import { AppDrawer, AppHeader, AppLoader } from "./components/layout";
 import { themeSessionResolver } from "./sessions.server";
 
 export const meta: MetaFunction = () => {
@@ -76,6 +75,7 @@ export function App() {
       </head>
       <body className="max-w-[1600px] bg-zinc-50 text-zinc-950 dark:bg-zinc-950 dark:text-zinc-50">
         <div className="flex w-full flex-col">
+          <AppLoader />
           <AppHeader />
           <div className="flex w-full flex-row overflow-x-clip">
             <AppDrawer />

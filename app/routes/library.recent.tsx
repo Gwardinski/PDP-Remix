@@ -10,7 +10,7 @@ import {
   PageSectionList,
 } from "~/components/layout";
 import { QuestionItemLibrary } from "~/components/questions";
-import { QuizGrid, QuizItemLibrary } from "~/components/quizzes";
+import { QuizCardLibrary, QuizGrid } from "~/components/quizzes";
 import { RoundCardLibrary, RoundGrid } from "~/components/rounds";
 import { Accordion, Button, H2 } from "~/components/ui";
 
@@ -41,7 +41,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
   });
 }
 
-const LibraryRecentPage = () => {
+const LibraryRecent = () => {
   const { quizzes, rounds, questions } = useLoaderData<typeof loader>();
 
   return (
@@ -56,9 +56,9 @@ const LibraryRecentPage = () => {
           </PageSectionHeader>
           <QuizGrid>
             {quizzes.map((z) => (
-              <QuizItemLibrary
-                key={z.id}
-                id={z.id}
+              <QuizCardLibrary
+                key={z.zid}
+                zid={z.zid}
                 title={z.title}
                 description={z.description}
                 noOfRounds={z.noOfRounds}
@@ -138,4 +138,4 @@ const LibraryRecentPage = () => {
   );
 };
 
-export default LibraryRecentPage;
+export default LibraryRecent;

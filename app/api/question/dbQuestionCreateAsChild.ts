@@ -1,6 +1,5 @@
-import { and, eq, ne, sql } from "drizzle-orm";
 import { db } from "../db";
-import { Question, Round, roundToQuestion } from "../schema";
+import { Question, roundToQuestion } from "../schema";
 
 type Question = typeof Question.$inferInsert;
 
@@ -28,18 +27,12 @@ export const dbQuestionCreateAsChild = async ({
     category,
   };
   await db.transaction(async (tx) => {
-    // Update Round 'noOfQuestions' && check ownership / published
-    const updatedRid = await tx
-      .update(Round)
-      .set({
-        noOfQuestions: sql`${Round.noOfQuestions ?? 0} + 1`,
-      })
-      .where(
-        and(eq(Round.id, rid), eq(Round.uid, uid), ne(Round.published, true)),
-      )
-      .returning({ id: Round.id });
+    const round = await db.query.Round.findFirst({
+      where: (round, { and, eq }) =>
+        and(eq(round.id, rid), eq(round.published, false), eq(round.uid, uid)),
+    });
 
-    if (!updatedRid) {
+    if (!round) {
       return false;
     }
 
@@ -56,7 +49,7 @@ export const dbQuestionCreateAsChild = async ({
     // Create link between Round and Question
     await tx
       .insert(roundToQuestion)
-      .values({ rid: updatedRid[0].id, qid: newQid[0].id });
+      .values({ rid: round.id, qid: newQid[0].id });
   });
   return true;
 };

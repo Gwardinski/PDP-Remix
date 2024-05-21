@@ -5,13 +5,16 @@ import {
   MetaFunction,
   Outlet,
   useLoaderData,
-  useNavigation,
   useSubmit,
 } from "@remix-run/react";
 import { useEffect, useState } from "react";
 import { isAuthenticated } from "~/api/auth";
 import { dbRoundsGetLibrary } from "~/api/round";
-import { PageContent, PageContentHeader } from "~/components/layout";
+import {
+  PageContent,
+  PageContentHeader,
+  useIsPending,
+} from "~/components/layout";
 import { RoundCardLibrary, RoundGrid } from "~/components/rounds";
 import { Button, Input } from "~/components/ui";
 
@@ -40,10 +43,10 @@ export async function loader({ request }: LoaderFunctionArgs) {
   };
 }
 
-const LibraryRoundPage = () => {
+const LibraryRound = () => {
   const { rounds, q } = useLoaderData<typeof loader>();
-  const { state } = useNavigation();
-  const isPending = Boolean(state === "loading");
+
+  const { isPending } = useIsPending();
 
   const [query, setQuery] = useState(q || "");
 
@@ -101,4 +104,4 @@ const LibraryRoundPage = () => {
   );
 };
 
-export default LibraryRoundPage;
+export default LibraryRound;

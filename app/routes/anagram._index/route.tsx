@@ -5,14 +5,10 @@ import {
   json,
   redirect,
 } from "@remix-run/node";
-import {
-  Form,
-  useActionData,
-  useLoaderData,
-  useNavigation,
-} from "@remix-run/react";
+import { Form, useActionData, useLoaderData } from "@remix-run/react";
 import { useState } from "react";
 import { getValidatedFormData, useRemixForm } from "remix-hook-form";
+import { useIsPending } from "~/components/layout";
 import {
   Button,
   Card,
@@ -86,8 +82,7 @@ const AnagramFormPage = () => {
     Boolean(category || noOfWords || clue),
   );
 
-  const { state } = useNavigation();
-  const isPending = Boolean(state === "submitting" || state === "loading");
+  const { isPending } = useIsPending();
 
   const defaultNoOfWords = noOfWords ? parseInt(noOfWords) : undefined;
 

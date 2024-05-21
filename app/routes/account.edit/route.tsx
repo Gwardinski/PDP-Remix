@@ -8,7 +8,6 @@ import {
   Form,
   json,
   useActionData,
-  useNavigation,
   useRouteLoaderData,
 } from "@remix-run/react";
 import {
@@ -18,6 +17,7 @@ import {
 } from "remix-hook-form";
 import { z } from "zod";
 import { isAuthenticated } from "~/api/auth";
+import { useIsPending } from "~/components/layout";
 import {
   Button,
   Card,
@@ -77,8 +77,7 @@ const AccountEditPage = () => {
   const data = useRouteLoaderData<RootLoader>("root");
   const response = useActionData<typeof action>();
 
-  const { state } = useNavigation();
-  const isPending = Boolean(state === "submitting" || state === "loading");
+  const { isPending } = useIsPending();
 
   const form = useRemixForm<FormType>({
     resolver,

@@ -17,6 +17,8 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "../ui";
 
@@ -56,7 +58,7 @@ export const QuestionItemLibrary: React.FC<QuestionItemLibraryProps> = ({
     <AccordionItem
       key={id}
       value={String(id)}
-      className="flex w-full items-center gap-2 border-b border-b-zinc-900 px-2"
+      className="flex w-full items-center gap-2 border-b px-2 hover:bg-zinc-100 dark:border-b-zinc-900 dark:hover:bg-zinc-900"
     >
       <AccordionTrigger hideIcon className="flex flex-col items-start py-2">
         <h4>{title}</h4>
@@ -82,6 +84,7 @@ export const QuestionItemLibrary: React.FC<QuestionItemLibraryProps> = ({
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent>
+          <DropdownMenuLabel>Rounds</DropdownMenuLabel>
           <DropdownMenuItem asChild>
             <Link to={addToPath} className="flex gap-2">
               <IconPlaylistAdd className="size-6" />
@@ -96,6 +99,8 @@ export const QuestionItemLibrary: React.FC<QuestionItemLibraryProps> = ({
               </Link>
             </DropdownMenuItem>
           )}
+          <DropdownMenuSeparator />
+          <DropdownMenuLabel>Actions</DropdownMenuLabel>
           {!published && (
             <DropdownMenuItem asChild>
               <Link to={editPath} className="flex gap-2">

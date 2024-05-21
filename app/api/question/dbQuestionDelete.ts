@@ -2,12 +2,13 @@ import { and, eq } from "drizzle-orm";
 import { db } from "../db";
 import { Question, roundToQuestion } from "../schema";
 
-type QuestionDeleteType = {
+export const dbQuestionDelete = async ({
+  uid,
+  qid,
+}: {
   uid: number;
   qid: number;
-};
-
-export const dbQuestionDelete = async ({ uid, qid }: QuestionDeleteType) => {
+}) => {
   await db.transaction(async (tx) => {
     const questionToDelete = await db.query.Question.findFirst({
       where: (question, { eq, and }) =>

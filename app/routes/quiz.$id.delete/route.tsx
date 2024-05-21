@@ -10,7 +10,6 @@ import {
   useActionData,
   useLoaderData,
   useNavigate,
-  useNavigation,
 } from "@remix-run/react";
 import {
   RemixFormProvider,
@@ -21,6 +20,7 @@ import { z } from "zod";
 import { isAuthenticated } from "~/api/auth";
 import { dbQuizGet } from "~/api/quiz";
 import { dbQuizDelete } from "~/api/quiz/dbQuizDelete";
+import { useIsPending } from "~/components/layout";
 import {
   Button,
   Dialog,
@@ -61,11 +61,11 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
   if (!uid) {
     return redirect("/");
   }
-  const rid = Number(params.id);
-  if (!rid) {
+  const zid = Number(params.zid);
+  if (!zid) {
     return redirect("/library/quizzes");
   }
-  const quiz = await dbQuizGet(rid);
+  const quiz = await dbQuizGet({ zid, uid });
   if (quiz?.uid !== uid) {
     return redirect("/library/quizzes");
   }
@@ -87,8 +87,7 @@ const QuizDeletePage = () => {
   const navigate = useNavigate();
   const closeModal = () => navigate(-1);
 
-  const { state } = useNavigation();
-  const isPending = Boolean(state === "submitting" || state === "loading");
+  const { isPending } = useIsPending();
 
   return (
     <Dialog open onOpenChange={closeModal}>
