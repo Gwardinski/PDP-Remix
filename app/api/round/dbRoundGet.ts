@@ -96,11 +96,13 @@ export const dbRoundsGetRecent = async (uid: number) => {
 export const dbRoundsGetFromQuestion = async ({
   qid,
   query,
+  rid,
 }: {
   qid: number;
   query: string;
+  rid?: number;
 }) => {
-  const rtq = await db.query.Round.findMany({
+  let rtq = await db.query.Round.findMany({
     where: (round, { eq, and, inArray, ilike }) =>
       and(
         inArray(
@@ -117,6 +119,9 @@ export const dbRoundsGetFromQuestion = async ({
       roundQuestions: true,
     },
   });
+  if (rid) {
+    rtq = rtq.filter((r) => r.id !== rid);
+  }
   return rtq.map((r) => {
     return {
       id: r.id,

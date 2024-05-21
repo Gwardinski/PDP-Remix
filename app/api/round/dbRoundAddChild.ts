@@ -1,3 +1,4 @@
+import { and, eq } from "drizzle-orm";
 import { db } from "../db";
 import { roundToQuestion } from "../schema";
 
@@ -102,6 +103,34 @@ export const dbRoundAddQuestion = async ({
 
     // Create link between Round and Question
     await tx.insert(roundToQuestion).values({ rid: rid, qid: qid });
+  });
+
+  return true;
+};
+
+// Removes a Question from a Round
+export const dbRoundRemoveQuestion = async ({
+  uid,
+  rid,
+  qid,
+}: {
+  uid: number;
+  rid: number;
+  qid: number;
+}) => {
+  await db.transaction(async (tx) => {
+    // Check Round exists and is owned
+    const round = await db.query.Round.findFirst({
+      where: (round, { and, eq }) => and(eq(round.id, rid), eq(round.uid, uid)),
+    });
+    if (!round) {
+      return false;
+    }
+
+    // Delete link between Round and Question
+    await tx
+      .delete(roundToQuestion)
+      .where(and(eq(roundToQuestion.rid, rid), eq(roundToQuestion.qid, qid)));
   });
 
   return true;

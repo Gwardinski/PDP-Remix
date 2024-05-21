@@ -1,5 +1,4 @@
-import { DropdownMenuLabel } from "@radix-ui/react-dropdown-menu";
-import { Link } from "@remix-run/react";
+import { Form, Link } from "@remix-run/react";
 import {
   IconGripVertical,
   IconList,
@@ -19,6 +18,7 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "../ui";
@@ -38,6 +38,7 @@ type QuestionItemRoundProps = {
   deletePath: string;
   addToPath: string;
   viewRoundsPath: string;
+  // removeProps: ButtonHTMLAttributes<HTMLButtonElement>;
 };
 export const QuestionItemRound: React.FC<QuestionItemRoundProps> = ({
   i,
@@ -93,21 +94,31 @@ export const QuestionItemRound: React.FC<QuestionItemRoundProps> = ({
           </DropdownMenuTrigger>
           <DropdownMenuContent>
             <DropdownMenuLabel>Rounds</DropdownMenuLabel>
-            <DropdownMenuItem className="flex gap-2">
-              <IconPlaylistX className="size-6" />
-              Remove Question
-            </DropdownMenuItem>
+            <Form method="post">
+              <Button
+                variant="unstyled"
+                className="w-full px-0"
+                value={qid}
+                name="removeQuestion"
+                type="submit"
+              >
+                <DropdownMenuItem className="flex w-full gap-2 font-normal">
+                  <IconPlaylistX className="size-6" />
+                  Remove Question
+                </DropdownMenuItem>
+              </Button>
+            </Form>
             <DropdownMenuItem asChild>
               <Link to={addToPath} className="flex gap-2">
                 <IconPlaylistAdd className="size-6" />
                 Add To Another Round
               </Link>
             </DropdownMenuItem>
-            {noOfRounds > 0 && (
+            {noOfRounds > 1 && (
               <DropdownMenuItem asChild>
                 <Link to={viewRoundsPath} className="flex gap-2">
                   <IconList className="size-6" />
-                  View {noOfRounds} Rounds
+                  View {noOfRounds - 1} Other Rounds
                 </Link>
               </DropdownMenuItem>
             )}
@@ -127,7 +138,7 @@ export const QuestionItemRound: React.FC<QuestionItemRoundProps> = ({
             </DropdownMenuItem>
             <DropdownMenuItem asChild>
               <Link to={deletePath} className="flex gap-2">
-                <IconTrash className="size-6" />
+                <IconTrash className="size-6 text-red-600 dark:text-red-500" />
                 Delete Question
               </Link>
             </DropdownMenuItem>

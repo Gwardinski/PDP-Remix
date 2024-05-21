@@ -120,7 +120,7 @@ export const QuestionItemLibrary: React.FC<QuestionItemLibraryProps> = ({
           {!published && (
             <DropdownMenuItem asChild>
               <Link to={deletePath} className="flex gap-2">
-                <IconTrash className="size-6" />
+                <IconTrash className="size-6 text-red-600 dark:text-red-500" />
                 Delete Question
               </Link>
             </DropdownMenuItem>

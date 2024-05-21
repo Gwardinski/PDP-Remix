@@ -109,7 +109,7 @@ const LibraryRecent = () => {
               <Link to="/library/questions">View All</Link>
             </Button>
           </PageSectionHeader>
-          <Accordion type="multiple">
+          <Accordion type="multiple" className="shadow-md">
             {questions.map((q) => (
               <QuestionItemLibrary
                 key={q.id}

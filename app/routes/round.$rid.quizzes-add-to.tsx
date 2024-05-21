@@ -4,12 +4,19 @@ import {
   json,
   redirect,
 } from "@remix-run/node";
-import { Form, useLoaderData, useRouteLoaderData } from "@remix-run/react";
+import {
+  Form,
+  Link,
+  Outlet,
+  useLoaderData,
+  useRouteLoaderData,
+} from "@remix-run/react";
 import { isAuthenticated } from "~/api/auth";
 import { dbQuizAddRound, dbQuizGetForRound } from "~/api/quiz";
 import { NoContentContainer } from "~/components/NoContentContainer";
 import { PageTabContent, useIsPending } from "~/components/layout";
 import { QuizCardRoundLibrary, QuizGrid } from "~/components/quizzes";
+import { Button } from "~/components/ui";
 import { RoundLoaderType } from "./round.$rid";
 
 export async function loader({ request, params }: LoaderFunctionArgs) {
@@ -72,32 +79,45 @@ const RoundQuizzesAddTo = () => {
       {noQuizzes && (
         <NoContentContainer>
           <p>You have no available Quizzes to add this Round to</p>
+          <Button className="lg:w-fit" asChild>
+            <Link to={`/round/${round.id}/quizzes-add-to/create`}>
+              Add to New Quiz
+            </Link>
+          </Button>
         </NoContentContainer>
       )}
       {Boolean(quizzes.length) && (
-        <Form method="post">
-          <QuizGrid>
-            {quizzes.map((z) => (
-              <QuizCardRoundLibrary
-                key={z.zid}
-                zid={z.zid}
-                title={z.title}
-                description={z.description}
-                createdAt={z.createdAt}
-                updatedAt={z.updatedAt}
-                published={z.published}
-                noOfRounds={z.noOfRounds}
-                noOfQuestions={z.noOfQuestions}
-                totalPoints={z.totalPoints}
-                name="selectedQuiz"
-                value={z.zid}
-                type="submit"
-                disabled={isPending}
-              />
-            ))}
-          </QuizGrid>
-        </Form>
+        <>
+          <Button className="lg:w-fit" asChild>
+            <Link to={`/round/${round.id}/quizzes-add-to/create`}>
+              Add to New Quiz
+            </Link>
+          </Button>
+          <Form method="post">
+            <QuizGrid>
+              {quizzes.map((z) => (
+                <QuizCardRoundLibrary
+                  key={z.zid}
+                  zid={z.zid}
+                  title={z.title}
+                  description={z.description}
+                  createdAt={z.createdAt}
+                  updatedAt={z.updatedAt}
+                  published={z.published}
+                  noOfRounds={z.noOfRounds}
+                  noOfQuestions={z.noOfQuestions}
+                  totalPoints={z.totalPoints}
+                  name="selectedQuiz"
+                  value={z.zid}
+                  type="submit"
+                  disabled={isPending}
+                />
+              ))}
+            </QuizGrid>
+          </Form>
+        </>
       )}
+      <Outlet />
     </PageTabContent>
   );
 };

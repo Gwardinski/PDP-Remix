@@ -15,7 +15,7 @@ import {
 import { useEffect, useState } from "react";
 import { isAuthenticated } from "~/api/auth";
 import { dbQuestionGetForRound } from "~/api/question";
-import { dbRoundAddQuestion } from "~/api/round";
+import { dbRoundAddQuestion, dbRoundRemoveQuestion } from "~/api/round";
 import { NoContentContainer } from "~/components/NoContentContainer";
 import {
   PageSection,
@@ -61,12 +61,23 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
   }
   const formData = await request.formData();
   const selectedQuestion = formData.get("selectedQuestion");
-  await dbRoundAddQuestion({
-    uid,
-    rid,
-    qid: Number(selectedQuestion),
-  });
+  const removeQuestion = formData.get("removeQuestion");
 
+  if (Boolean(selectedQuestion)) {
+    console.log(selectedQuestion);
+    await dbRoundAddQuestion({
+      uid,
+      rid,
+      qid: Number(selectedQuestion),
+    });
+  }
+  if (Boolean(removeQuestion)) {
+    await dbRoundRemoveQuestion({
+      uid,
+      rid,
+      qid: Number(removeQuestion),
+    });
+  }
   return true;
 };
 
@@ -95,7 +106,7 @@ const RoundQuestions = () => {
   const hasLibraryQuestions = (Boolean(questions.length) && !q) || q;
 
   return (
-    <PageSectionList className="flex-col lg:flex-row">
+    <PageSectionList className="flex-col 2xl:flex-row">
       <PageSection>
         {hasQuestions && (
           <Accordion type="multiple" className="border-t dark:border-zinc-900">
@@ -115,7 +126,7 @@ const RoundQuestions = () => {
                 publishPath={`/round/${round.id}/questions/${q.id}/publish`}
                 deletePath={`/round/${round.id}/questions/${q.id}/delete`}
                 addToPath={`/round/${round.id}/questions/${q.id}/add-to`}
-                viewRoundsPath={"/"}
+                viewRoundsPath={`/round/${round.id}/questions/${q.id}/view-rounds`}
               />
             ))}
           </Accordion>
