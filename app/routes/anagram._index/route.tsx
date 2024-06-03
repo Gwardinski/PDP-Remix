@@ -5,14 +5,14 @@ import {
   json,
   redirect,
 } from "@remix-run/node";
-import {
-  Form,
-  useActionData,
-  useLoaderData,
-  useNavigation,
-} from "@remix-run/react";
+import { Form, useActionData, useLoaderData } from "@remix-run/react";
 import { useState } from "react";
-import { getValidatedFormData, useRemixForm } from "remix-hook-form";
+import {
+  RemixFormProvider,
+  getValidatedFormData,
+  useRemixForm,
+} from "remix-hook-form";
+import { useIsPending } from "~/components/layout";
 import {
   Button,
   Card,
@@ -21,6 +21,8 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
+  FormControl,
+  FormField,
   FormItem,
   FormItems,
   FormLabel,
@@ -86,22 +88,20 @@ const AnagramFormPage = () => {
     Boolean(category || noOfWords || clue),
   );
 
-  const { state } = useNavigation();
-  const isSubmitting = Boolean(state === "submitting" || state === "loading");
+  const { isPending } = useIsPending();
 
   const defaultNoOfWords = noOfWords ? parseInt(noOfWords) : undefined;
 
-  const { handleSubmit, register, formState, resetField } =
-    useRemixForm<AnagramFormType>({
-      resolver,
-      defaultValues: {
-        anagram: anagram ?? "",
-        category: category ?? "",
-        noOfWords:
-          typeof defaultNoOfWords === "number" ? defaultNoOfWords : undefined,
-        clue: clue ?? "",
-      },
-    });
+  const form = useRemixForm<AnagramFormType>({
+    resolver,
+    defaultValues: {
+      anagram: anagram ?? "",
+      category: category ?? "",
+      noOfWords:
+        typeof defaultNoOfWords === "number" ? defaultNoOfWords : undefined,
+      clue: clue ?? "",
+    },
+  });
 
   const onShowHints = () => {
     if (!showHints) {
@@ -109,9 +109,9 @@ const AnagramFormPage = () => {
       return;
     }
     setShowHints(false);
-    resetField("category");
-    resetField("clue");
-    resetField("noOfWords");
+    form.resetField("category");
+    form.resetField("clue");
+    form.resetField("noOfWords");
   };
 
   return (
@@ -122,68 +122,87 @@ const AnagramFormPage = () => {
           Enter details of your Anagram to get an answer
         </CardDescription>
       </CardHeader>
-      <Form method="post" onSubmit={handleSubmit}>
-        <CardContent>
-          <FormItems>
-            <FormItem>
-              <FormLabel>Anagram</FormLabel>
-              <Input {...register("anagram")} />
-              {formState.errors.anagram && (
-                <FormMessage>{formState.errors.anagram.message}</FormMessage>
+      <Form method="post" onSubmit={form.handleSubmit}>
+        <RemixFormProvider {...form}>
+          <CardContent>
+            <FormItems>
+              <FormField
+                control={form.control}
+                name="anagram"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Anagram</FormLabel>
+                    <FormControl>
+                      <Input {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              {showHints && (
+                <>
+                  <FormField
+                    control={form.control}
+                    name="category"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Category</FormLabel>
+                        <FormControl>
+                          <Input {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="noOfWords"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>No of Words</FormLabel>
+                        <FormControl>
+                          <Input type="number" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="clue"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Clue</FormLabel>
+                        <FormControl>
+                          <Input {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </>
               )}
-            </FormItem>
+            </FormItems>
+          </CardContent>
 
-            {showHints && (
-              <FormItem>
-                <FormLabel>Category</FormLabel>
-                <Input {...register("category")} />
-                {formState.errors.category && (
-                  <FormMessage>{formState.errors.category.message}</FormMessage>
-                )}
-              </FormItem>
-            )}
-
-            {showHints && (
-              <FormItem>
-                <FormLabel>Clue</FormLabel>
-                <Input {...register("clue")} />
-                {formState.errors.clue && (
-                  <FormMessage>{formState.errors.clue.message}</FormMessage>
-                )}
-              </FormItem>
-            )}
-
-            {showHints && (
-              <FormItem>
-                <FormLabel>Number of Words</FormLabel>
-                <Input
-                  type="number"
-                  {...register("noOfWords", { valueAsNumber: true })}
-                />
-                {formState.errors.noOfWords && (
-                  <FormMessage>
-                    {formState.errors.noOfWords.message}
-                  </FormMessage>
-                )}
-              </FormItem>
-            )}
-          </FormItems>
-        </CardContent>
-
-        <CardFooter>
-          <Button
-            variant="outline"
-            onClick={onShowHints}
-            disabled={isSubmitting}
-            type="button"
-          >
-            {showHints ? "Remove Hints" : "Add Hints"}
-          </Button>
-          {response?.error && <FormMessage>{response.error}</FormMessage>}
-          <Button disabled={isSubmitting} type="submit">
-            Submit
-          </Button>
-        </CardFooter>
+          <CardFooter>
+            <Button
+              variant="outline"
+              onClick={onShowHints}
+              disabled={isPending}
+              type="button"
+            >
+              {showHints ? "Remove Hints" : "Add Hints"}
+            </Button>
+            {response?.error && <FormMessage>{response.error}</FormMessage>}
+            <Button disabled={isPending} type="submit">
+              Submit
+            </Button>
+          </CardFooter>
+        </RemixFormProvider>
       </Form>
     </Card>
   );

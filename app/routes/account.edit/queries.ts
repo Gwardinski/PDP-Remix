@@ -1,7 +1,7 @@
 import { eq } from "drizzle-orm";
 import { db } from "~/api/db";
-import { users } from "~/api/schema";
+import { User } from "~/api/schema";
 
 export const updateUsersName = async (id: number, name: string) => {
-  await db.update(users).set({ name }).where(eq(users.id, id));
+  await db.update(User).set({ name }).where(eq(User.id, id));
 };

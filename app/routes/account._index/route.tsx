@@ -14,7 +14,7 @@ const AccountViewPage = () => {
   const user = data?.user;
 
   return (
-    <Card className="max-w-lg">
+    <Card>
       <CardHeader>
         <CardTitle>{user?.name}</CardTitle>
         <CardDescription>{user?.email}</CardDescription>

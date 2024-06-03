@@ -7,7 +7,7 @@ export function H1({ className, ...props }: TextProps) {
   return (
     <h1
       className={cn(
-        "bg-gradient-to-b from-zinc-900 to-zinc-600 bg-clip-text text-4xl font-extrabold tracking-wider text-transparent dark:from-zinc-100 dark:to-zinc-400",
+        "bg-gradient-to-b from-zinc-900 to-zinc-600 bg-clip-text text-4xl font-extrabold leading-10 tracking-wider text-transparent dark:from-zinc-100 dark:to-zinc-400",
         className,
       )}
       {...props}
@@ -33,7 +33,7 @@ export function H2({ className, ...props }: TextProps) {
   return (
     <h2
       className={cn(
-        "bg-gradient-to-b from-zinc-900 to-zinc-600 bg-clip-text text-3xl font-bold tracking-wide text-transparent dark:from-zinc-100 dark:to-zinc-400",
+        "bg-gradient-to-b from-zinc-900 to-zinc-600 bg-clip-text text-2xl font-bold tracking-wide text-transparent dark:from-zinc-100 dark:to-zinc-400",
         className,
       )}
       {...props}
@@ -79,7 +79,7 @@ export function H4({ className, ...props }: TextProps) {
   return (
     <h4
       className={cn(
-        "text-lg leading-6 text-zinc-800 dark:text-zinc-200",
+        "text-lg font-bold leading-6 text-zinc-800 dark:text-zinc-200",
         className,
       )}
       {...props}

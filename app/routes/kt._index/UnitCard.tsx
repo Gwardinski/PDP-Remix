@@ -43,8 +43,8 @@ export const UnitCard = ({ unit }: { unit: Unit }) => {
       key={unit.id}
       onClick={onUnitClick}
       className={`flex w-full flex-col items-start rounded-md border-2 p-2 
-        ${!isSelected && !isTarget && " hover:bg-gray-100"}  
-        ${isSelected && "bg-gray-200 hover:bg-gray-200"} 
+        ${!isSelected && !isTarget && " hover:bg-zinc-100"}  
+        ${isSelected && "bg-zinc-200 hover:bg-zinc-200"} 
         ${isSelected && action === "attack" && "border-red-500"} 
         ${isSelected && action === "heal" && "border-green-500"} 
         ${isSelected && action === "capture" && "border-blue-500"}

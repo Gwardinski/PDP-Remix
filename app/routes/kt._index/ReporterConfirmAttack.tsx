@@ -6,6 +6,8 @@ import { useGameStore } from "./_state";
 import { InfoCard } from "./components";
 
 export const ReporterConfirmAttack: React.FC = () => {
+  const [showInfo, setShowInfo] = useState(false);
+
   const action = useGameStore((state) => state.selectedAction);
   const selectedUnits = useGameStore((state) => state.selectedUnits);
   const selectedTargets = useGameStore((state) => state.selectedTargets);
@@ -37,14 +39,21 @@ export const ReporterConfirmAttack: React.FC = () => {
     <div className="flex h-full w-full flex-col gap-4">
       <h2 className="text-2xl">Units</h2>
       <InfoCard title="Total Damage Dealt">
-        {selectedUnits.length > 1 && (
+        {showInfo && (
           <div className="flex flex-col gap-0 py-2 text-sm">
-            <p>
-              Comrades share in the glory of their victory. The total damage
-              dealt will be applied to both units battle reports, not split
-              among them.
-            </p>
-            <p>Note: It will only be applied once to the team as a whole.</p>
+            <p>Full damage inflicted, including environmental</p>
+            {selectedUnits.length > 1 && (
+              <>
+                <p>
+                  Comrades share in the glory of their victory. The total damage
+                  dealt will be applied to both units battle reports, not split
+                  among them.
+                </p>
+                <p>
+                  Note: It will only be applied once to the team as a whole.
+                </p>
+              </>
+            )}
           </div>
         )}
         <div className="flex w-full flex-row items-center justify-start gap-2">
@@ -68,18 +77,17 @@ export const ReporterConfirmAttack: React.FC = () => {
       </InfoCard>
 
       <InfoCard title="Shots Missed">
-        <div className="flex flex-col gap-0 py-2 text-sm">
-          {selectedUnits.length > 1 && (
-            <p>
-              Comrades share in their failure. Penalties are applied to all
-              parties that bring shame.
-            </p>
-          )}
-          <p>
-            Misses only. Do not include cover, shields etc getting in the way of
-            the kill.
-          </p>
-        </div>
+        {showInfo && (
+          <div className="flex flex-col gap-0 py-2 text-sm">
+            <p>Misses only. Do not include cover, enemy shields etc</p>
+            {selectedUnits.length > 1 && (
+              <p>
+                Comrades share in their failure. Penalties are applied to all
+                parties that bring shame.
+              </p>
+            )}
+          </div>
+        )}
         <div className="flex w-full flex-row items-center justify-start gap-2">
           <div className="flex w-1/2 flex-col items-start justify-start gap-2 overflow-x-clip">
             {selectedUnits.map((u) => (
@@ -102,12 +110,14 @@ export const ReporterConfirmAttack: React.FC = () => {
 
       <h2 className="text-2xl">Targets</h2>
       <InfoCard title="Damage Deflected">
-        <div className="flex flex-col gap-0 py-2 text-sm">
-          <p>
-            Any cover, shields, luck or anything else that prevented a clean
-            shot.
-          </p>
-        </div>
+        {showInfo && (
+          <div className="flex flex-col gap-0 py-2 text-sm">
+            <p>
+              Any cover, shields, luck or anything else that prevented a clean
+              shot.
+            </p>
+          </div>
+        )}
         <div className="flex w-full flex-row items-center justify-start gap-2">
           <div className="flex w-1/2 flex-col items-start justify-start gap-2 overflow-x-clip">
             {selectedTargets.map((u) => (
@@ -129,9 +139,11 @@ export const ReporterConfirmAttack: React.FC = () => {
       </InfoCard>
 
       <InfoCard title="Damage Inflicted">
-        <div className="flex flex-col gap-0 py-2 text-sm">
-          <p>Full damage taken, including environmental</p>
-        </div>
+        {showInfo && (
+          <div className="flex flex-col gap-0 py-2 text-sm">
+            <p>Full damage taken, including environmental</p>
+          </div>
+        )}
         <div className="flex w-full flex-row items-center justify-start gap-2">
           <div className="flex w-1/2 flex-col items-start justify-start gap-2 overflow-x-clip">
             {selectedTargets.map((u) => (
@@ -152,13 +164,16 @@ export const ReporterConfirmAttack: React.FC = () => {
         </div>
       </InfoCard>
 
-      <div className="fixed bottom-0 left-0 right-0 flex w-full gap-2 bg-gray-200 p-4">
-        <Button onClick={reset} className="w-full">
-          Cancel
-        </Button>
-        <Button onClick={submit} className="w-full">
-          Confirm
-        </Button>
+      <div className="fixed bottom-0 left-0 right-0 flex w-full flex-col gap-2 bg-zinc-200 p-4">
+        <Button onClick={() => setShowInfo((v) => !v)}>Show Info</Button>
+        <div className="flex gap-2">
+          <Button onClick={reset} className="w-full">
+            Cancel
+          </Button>
+          <Button onClick={submit} className="w-full">
+            Confirm
+          </Button>
+        </div>
       </div>
     </div>
   );

@@ -10,7 +10,7 @@ import {
 
 export const Unauthenticated: React.FC = () => {
   return (
-    <Card className="max-w-lg">
+    <Card>
       <CardHeader>
         <CardTitle className="pb-2">Unauthenticated</CardTitle>
         <CardDescription>You must be logged in to continue</CardDescription>

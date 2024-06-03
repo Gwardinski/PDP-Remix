@@ -20,10 +20,14 @@ import {
 } from "remix-themes";
 import { Toaster } from "sonner";
 import stylesheet from "~/globals.css";
-import { authCookie } from "./api/auth/authCookie";
-import { getUserFromId } from "./api/auth/getUserFromId";
-import { AppDrawer } from "./components/layout/AppDrawer";
-import { AppHeader } from "./components/layout/AppHeader";
+import { dbGetAuthenticatedUser } from "./api/auth";
+import {
+  AppBackground,
+  AppDrawer,
+  AppFooter,
+  AppHeader,
+  AppLoader,
+} from "./components/layout";
 import { themeSessionResolver } from "./sessions.server";
 
 export const meta: MetaFunction = () => {
@@ -43,13 +47,11 @@ export const links: LinksFunction = () => [
 export type RootLoader = typeof loader;
 export async function loader({ request }: LoaderFunctionArgs) {
   const { getTheme } = await themeSessionResolver(request);
-  let cookieString = request.headers.get("Cookie");
-  let userId = await authCookie.parse(cookieString);
-  const user = await getUserFromId(userId);
+  const user = await dbGetAuthenticatedUser(request);
 
   return {
     theme: getTheme(),
-    userId,
+    userId: user?.id,
     user,
   };
 }
@@ -77,16 +79,26 @@ export function App() {
         <PreventFlashOnWrongTheme ssrTheme={Boolean(sessionTheme)} />
         <Links />
       </head>
-      <body className="max-w-[1600px] bg-zinc-50 text-zinc-950 dark:bg-zinc-950 dark:text-zinc-50">
-        <div className="flex w-full flex-col">
-          <AppHeader />
-          <div className="flex w-full flex-row overflow-x-clip">
-            <AppDrawer />
-            <main className="flex flex-1 flex-col gap-8 overflow-x-clip px-2 pb-40 md:ml-80 md:px-4">
+
+      <body className="text-zinc-950 dark:text-zinc-50">
+        <AppBackground />
+
+        <div className="flex h-full min-h-screen w-full flex-col items-center overflow-y-auto">
+          <AppLoader />
+
+          <div className="flex w-full max-w-[1600px] justify-center gap-4 px-2 md:px-4">
+            <div className="sticky top-0 flex h-screen w-80 flex-col overflow-y-auto pb-4">
+              <AppHeader />
+              <AppDrawer />
+              <AppFooter />
+            </div>
+
+            <main className="flex min-h-screen w-full flex-1 flex-col gap-8 overflow-y-auto overflow-x-clip pb-40 pt-20">
               <Outlet />
             </main>
           </div>
         </div>
+
         <Toaster />
         <ScrollRestoration />
         <Scripts />

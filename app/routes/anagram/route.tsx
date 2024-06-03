@@ -1,6 +1,6 @@
-import { LoaderFunctionArgs } from "@remix-run/node";
+import { LoaderFunctionArgs, redirect } from "@remix-run/node";
 import { Outlet, useLoaderData } from "@remix-run/react";
-import { authCookie } from "~/api/auth/authCookie";
+import { isAuthenticated } from "~/api/auth";
 import {
   BugText,
   CodeSnippet,
@@ -8,7 +8,12 @@ import {
   GithubLink,
 } from "~/components/DocText";
 import { Unauthenticated } from "~/components/Unauthenticated";
-import { PageAccordion, PageHeader, PageLayout } from "~/components/layout";
+import {
+  Page,
+  PageHeader,
+  PageHeaderAccordion,
+  PageHeading,
+} from "~/components/layout";
 import {
   Accordion,
   AccordionContent,
@@ -19,10 +24,9 @@ import {
 
 // make public? 🤔
 export const loader = async ({ request }: LoaderFunctionArgs) => {
-  let cookieString = request.headers.get("Cookie");
-  let userId = await authCookie.parse(cookieString);
-  if (!userId) {
-    return false;
+  const uid = await isAuthenticated(request);
+  if (!uid) {
+    return redirect("/");
   }
   return true;
 };
@@ -32,10 +36,13 @@ const AnagramLayoutPage = () => {
   const loggedIn = response;
 
   return (
-    <PageLayout>
+    <Page>
       <PageHeader>
-        <H1>Anagram Solver</H1>
-        <PageAccordion>
+        <PageHeading>
+          <H1>Anagram Solver</H1>
+        </PageHeading>
+
+        <PageHeaderAccordion>
           <Accordion type="single" collapsible defaultValue="description">
             <AccordionItem value="description">
               <AccordionTrigger className="gap-4">
@@ -61,11 +68,11 @@ const AnagramLayoutPage = () => {
               </AccordionContent>
             </AccordionItem>
           </Accordion>
-        </PageAccordion>
+        </PageHeaderAccordion>
       </PageHeader>
 
       {loggedIn ? <Outlet /> : <Unauthenticated />}
-    </PageLayout>
+    </Page>
   );
 };
 

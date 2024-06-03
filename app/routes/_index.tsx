@@ -2,11 +2,12 @@ import { MetaFunction, json, useLoaderData } from "@remix-run/react";
 import { DocumentationLink, GithubLink } from "~/components/DocText";
 import { YoutubeVideo, YoutubeVideoGrid } from "~/components/Youtube";
 import {
-  PageAccordion,
+  Page,
   PageHeader,
+  PageHeaderAccordion,
   PageHeading,
-  PageLayout,
-  SectionHeading,
+  PageSection,
+  PageSectionHeader,
 } from "~/components/layout";
 import {
   Accordion,
@@ -79,7 +80,7 @@ export default function HomePage() {
   const { playlists } = useLoaderData<typeof loader>();
 
   return (
-    <PageLayout>
+    <Page>
       <PageHeader>
         <PageHeading>
           <H1>PDP Playground</H1>
@@ -87,12 +88,13 @@ export default function HomePage() {
             Gordon Macintyre - Personal Development Project
           </H1Description>
         </PageHeading>
-        <PageAccordion>
+
+        <PageHeaderAccordion>
           <Accordion type="single" collapsible defaultValue="description">
             <AccordionItem value="description">
-              <AccordionTrigger className="gap-4">
-                A place to work through various tutorials without having to
-                setup individual projects.
+              <AccordionTrigger>
+                a scratchpad for trying out new technologies, techniques, &
+                tutorials
               </AccordionTrigger>
               <AccordionContent className="flex flex-col gap-2 pb-6">
                 <GithubLink
@@ -119,29 +121,31 @@ export default function HomePage() {
               </AccordionContent>
             </AccordionItem>
           </Accordion>
-        </PageAccordion>
+        </PageHeaderAccordion>
       </PageHeader>
 
-      <SectionHeading>
-        <H2>Tutorials</H2>
-        <H2Description>
-          Interesting things I've added to playlists and may or may not get
-          around to looking into 👀
-        </H2Description>
-      </SectionHeading>
+      <PageSection>
+        <PageSectionHeader>
+          <H2>Tutorials</H2>
+          <H2Description>
+            Interesting things I've added to playlists and may or may not get
+            around to looking into 👀
+          </H2Description>
+        </PageSectionHeader>
 
-      <Tabs defaultValue="1">
-        <TabsList>
-          <TabsTrigger value="1">Stuff to Code</TabsTrigger>
-          <TabsTrigger value="2">Stuff to Watch</TabsTrigger>
-        </TabsList>
-        <TabsContent value="1">
-          <YoutubeVideoGrid videos={playlists[0]} />
-        </TabsContent>
-        <TabsContent value="2">
-          <YoutubeVideoGrid videos={playlists[1]} />
-        </TabsContent>
-      </Tabs>
-    </PageLayout>
+        <Tabs defaultValue="1">
+          <TabsList className="glass dark:dark-glass">
+            <TabsTrigger value="1">Stuff to Code</TabsTrigger>
+            <TabsTrigger value="2">Stuff to Watch</TabsTrigger>
+          </TabsList>
+          <TabsContent value="1">
+            <YoutubeVideoGrid videos={playlists[0]} />
+          </TabsContent>
+          <TabsContent value="2">
+            <YoutubeVideoGrid videos={playlists[1]} />
+          </TabsContent>
+        </Tabs>
+      </PageSection>
+    </Page>
   );
 }
