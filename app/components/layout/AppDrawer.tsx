@@ -1,4 +1,5 @@
 import { Form, Link, useLoaderData } from "@remix-run/react";
+import { IconLock } from "@tabler/icons-react";
 import { Menu } from "lucide-react";
 import { create } from "zustand";
 import { RootLoader } from "../../root";
@@ -57,21 +58,25 @@ export const AppDrawer: React.FC = () => {
       )}
       <H3>Playground</H3>
       <Button onClick={close} className="w-full" asChild>
-        <Link to={"/anagram"}>Anagram Solver - GPT</Link>
+        <Link to={"/anagram"}>
+          GPT Anagram Solver{" "}
+          {!userId && <IconLock className="absolute right-6" />}
+        </Link>
       </Button>
       <Button onClick={close} className="w-full" asChild>
-        <Link to={"/dnd/demo"}>Quiz - DnD Demo</Link>
-      </Button>
-      <Button onClick={close} className="w-full" asChild>
-        <Link to={"/kt"}>KT - (WIP)</Link>
-      </Button>
-      <Button onClick={close} className="w-full" asChild>
-        <Link to={"/kt"}>PEW - (WIP)</Link>
+        <Link to={"/kt"}>
+          KT (WIP) {!userId && <IconLock className="absolute right-6" />}
+        </Link>
       </Button>
       <H3>Apps</H3>
       <Button onClick={close} className="w-full" asChild>
-        <a href="https://anagram-cruncher.vercel.app" target="_blank">
-          Anagram Cruncher
+        <a href="https://quizflow-gm.vercel.app" target="_blank">
+          QuizFlow (WIP)
+        </a>
+      </Button>
+      <Button onClick={close} className="w-full" asChild>
+        <a href="https://pixelboard-gm.vercel.app/" target="_blank">
+          PixelBoard
         </a>
       </Button>
       <Button onClick={close} className="w-full" asChild>
@@ -80,8 +85,8 @@ export const AppDrawer: React.FC = () => {
         </a>
       </Button>
       <Button onClick={close} className="w-full" asChild>
-        <a href="https://quizflow-gm.vercel.app" target="_blank">
-          QuizFlow (WIP)
+        <a href="https://anagram-cruncher.vercel.app" target="_blank">
+          Anagram Cruncher
         </a>
       </Button>
       <Button onClick={close} className="w-full" disabled>
