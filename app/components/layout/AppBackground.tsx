@@ -1,4 +1,4 @@
-import { IconBackground } from "@tabler/icons-react";
+import { IconPlayerPlay, IconVideoOff } from "@tabler/icons-react";
 import { useTheme } from "remix-themes";
 import { create } from "zustand";
 import videoLight from "../../../public/vbg1.mp4";
@@ -23,7 +23,7 @@ export const AppBackground: React.FC = () => {
   return (
     <>
       {/* bg image */}
-      <div className="fixed left-0 top-0 h-screen min-h-screen w-screen bg-[url('/bg1.jpeg')] bg-cover bg-fixed bg-center blur-lg dark:bg-zinc-950 dark:bg-[url('/bg2.jpeg')]" />
+      <div className="fixed left-0 top-0 -z-50 h-screen min-h-screen w-screen bg-[url('/bg1.jpeg')] bg-cover bg-fixed bg-center blur-lg dark:bg-zinc-950 dark:bg-[url('/bg2.jpeg')]" />
       {/* bg video */}
       {theme === "dark" && isOn && (
         <video
@@ -31,7 +31,7 @@ export const AppBackground: React.FC = () => {
           loop
           autoPlay
           id="myVideo"
-          className="fixed left-0 top-0 h-screen min-h-screen w-screen object-cover"
+          className="fixed left-0 top-0 -z-40 h-screen min-h-screen w-screen object-cover"
         >
           <source src={videoDark} type="video/mp4" />
         </video>
@@ -42,14 +42,14 @@ export const AppBackground: React.FC = () => {
           loop
           autoPlay
           id="myVideo"
-          className="fixed left-0 top-0 h-screen min-h-screen w-screen object-cover"
+          className="fixed left-0 top-0 -z-40 h-screen min-h-screen w-screen object-cover"
         >
           <source src={videoLight} type="video/mp4" />
         </video>
       )}
       {/* bg blur */}
       {isOn && (
-        <div className="dark:filter-dark fixed left-0 top-0 h-screen min-h-screen w-screen object-cover filter" />
+        <div className="dark:filter-dark fixed left-0 top-0 -z-30 h-screen min-h-screen w-screen object-cover filter" />
       )}
     </>
   );
@@ -57,10 +57,11 @@ export const AppBackground: React.FC = () => {
 
 export const AppBackgroundToggle: React.FC = () => {
   const toggle = useVideoBGStore((state) => state.toggle);
+  const isOn = useVideoBGStore((state) => state.isOn);
 
   return (
     <Button size="icon" variant="outline" onClick={toggle}>
-      <IconBackground />
+      {isOn ? <IconVideoOff /> : <IconPlayerPlay />}
     </Button>
   );
 };

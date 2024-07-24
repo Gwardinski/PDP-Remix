@@ -127,10 +127,7 @@ export default function HomePage() {
       <PageSection>
         <PageSectionHeader>
           <H2>Tutorials</H2>
-          <H2Description>
-            Interesting things I've added to playlists and may or may not get
-            around to looking into 👀
-          </H2Description>
+          <H2Description>Interesting things to look into 👀</H2Description>
         </PageSectionHeader>
 
         <Tabs defaultValue="1">
