@@ -58,6 +58,9 @@ export const AppDrawer: React.FC = () => {
       )}
       <H3>Playground</H3>
       <Button onClick={close} className="w-full" asChild>
+        <Link to={"/metronome"}>Metronome (WIP)</Link>
+      </Button>
+      <Button onClick={close} className="w-full" asChild>
         <Link to={"/anagram"}>
           GPT Anagram Solver{" "}
           {!userId && <IconLock className="absolute right-6" />}
