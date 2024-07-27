@@ -58,7 +58,9 @@ const AuthLayoutPage = () => {
         </PageHeaderAccordion>
       </PageHeader>
 
-      <Outlet />
+      <div className="flex h-full w-full flex-col items-center">
+        <Outlet />
+      </div>
     </Page>
   );
 };

@@ -51,7 +51,7 @@ export type YoutubeVideoResourceId = { kind: string; videoId: string };
 
 export const YoutubeVideoGrid = ({ videos }: { videos: YoutubeVideo[] }) => {
   return (
-    <div className="glass dark:dark-glass flex w-full flex-col items-center justify-center gap-4 overflow-hidden rounded-md p-2 sm:grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 lg:p-4 ">
+    <div className="glass dark:dark-glass flex w-full flex-col items-center justify-center gap-4 overflow-hidden rounded-md p-2 sm:grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 lg:p-4 2xl:grid-cols-6 ">
       {videos
         .filter((v) => v.snippet?.title !== "Private video")
         .map((video) => (

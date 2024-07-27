@@ -86,7 +86,7 @@ const SignUpPage = () => {
   });
 
   return (
-    <Card>
+    <Card className="w-full">
       <CardHeader>
         <CardTitle>Sign Up!</CardTitle>
         <CardDescription>

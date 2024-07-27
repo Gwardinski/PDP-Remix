@@ -23,7 +23,6 @@ import stylesheet from "~/globals.css";
 import { dbGetAuthenticatedUser } from "./api/auth";
 import {
   AppBackground,
-  AppDrawer,
   AppFooter,
   AppHeader,
   AppLoader,
@@ -83,20 +82,14 @@ export function App() {
       <body className="text-zinc-950 dark:text-zinc-50">
         <AppBackground />
 
-        <div className="flex h-full min-h-screen w-full flex-col items-center overflow-y-auto">
+        <div className="flex h-full min-h-screen w-full flex-col items-center justify-center gap-4 overflow-y-auto px-2 md:px-4">
           <AppLoader />
 
-          <div className="flex w-full max-w-[1600px] justify-center gap-4 px-2 md:px-4">
-            <div className="sticky top-0 flex h-screen w-80 flex-col overflow-y-auto pb-4">
-              <AppHeader />
-              <AppDrawer />
-              <AppFooter />
-            </div>
-
-            <main className="flex min-h-screen w-full flex-1 flex-col gap-8 overflow-y-auto overflow-x-clip pb-40 pt-20">
-              <Outlet />
-            </main>
-          </div>
+          <main className="flex min-h-screen w-full max-w-[1600px] flex-1 flex-col overflow-y-auto overflow-x-clip pb-20">
+            <AppHeader />
+            <Outlet />
+            <AppFooter />
+          </main>
         </div>
 
         <Toaster />

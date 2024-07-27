@@ -1,5 +1,17 @@
 import { MetaFunction, json, useLoaderData } from "@remix-run/react";
+import {
+  IconAi,
+  IconClock,
+  IconDice,
+  IconLuggage,
+  IconPaint,
+  IconPointerUp,
+  IconQuestionMark,
+} from "@tabler/icons-react";
+import { create } from "zustand";
 import { DocumentationLink, GithubLink } from "~/components/DocText";
+import { PlaygroundCard } from "~/components/PlaygroundCard";
+import { ProjectCard } from "~/components/ProjectCard";
 import { YoutubeVideo, YoutubeVideoGrid } from "~/components/Youtube";
 import {
   Page,
@@ -78,6 +90,10 @@ export const loader = async () => {
 
 export default function HomePage() {
   const { playlists } = useLoaderData<typeof loader>();
+  const tab1 = useTabStore((state) => state.tab1);
+  const setTab1 = useTabStore((state) => state.setTab1);
+  const tab2 = useTabStore((state) => state.tab2);
+  const setTab2 = useTabStore((state) => state.setTab2);
 
   return (
     <Page>
@@ -126,12 +142,89 @@ export default function HomePage() {
 
       <PageSection>
         <PageSectionHeader>
+          <H2>Projects & Playgrounds</H2>
+          <H2Description>
+            Projects start here as Playgrounds before being broken off into
+            their own standalone apps.
+          </H2Description>
+        </PageSectionHeader>
+
+        <Tabs defaultValue={tab1} onValueChange={setTab1}>
+          <TabsList className="glass dark:dark-glass mb-4">
+            <TabsTrigger value="1">Projects</TabsTrigger>
+            <TabsTrigger value="2">Playgrounds</TabsTrigger>
+          </TabsList>
+          <TabsContent value="1">
+            <div className="glass dark:dark-glass flex w-full grid-cols-1 flex-col items-center justify-center gap-4 overflow-hidden rounded-md p-2 sm:grid sm:grid-cols-2 lg:p-4 xl:grid-cols-4 ">
+              <ProjectCard
+                title={"QuizFlow"}
+                description={"A Pub-Quiz Management App"}
+                icon={<IconQuestionMark className="size-32" />}
+                link={"https://quizflow-gm.vercel.app"}
+                github={"https://github.com/Gwardinski/quizflow"}
+              />
+              <ProjectCard
+                title={"PixelBoard"}
+                description={"Online Pixel Art"}
+                icon={<IconPaint className="size-32" />}
+                link={"https://pixelboard-gm.vercel.app/"}
+                github={"https://github.com/Gwardinski/pixelboard"}
+              />
+              <ProjectCard
+                title={"PantiePacker"}
+                description={"The Travel App"}
+                icon={<IconLuggage className="size-32" />}
+                link={"https://pantie-packer.vercel.app"}
+                github={"https://github.com/Gwardinski/pantie-packer"}
+              />
+              <ProjectCard
+                title={"Anagram Cruncher"}
+                description={"Uses ChatGPT to solve Anagrams"}
+                icon={<IconAi className="size-32" />}
+                link={"https://anagram-cruncher.vercel.app"}
+                github={"https://github.com/Gwardinski/anagram-solver"}
+              />
+            </div>
+          </TabsContent>
+          <TabsContent value="2">
+            <div className="glass dark:dark-glass flex w-full grid-cols-1 flex-col items-center justify-center gap-4 overflow-hidden rounded-md p-2 sm:grid sm:grid-cols-2 lg:p-4 xl:grid-cols-4 ">
+              <PlaygroundCard
+                title="Anagram Solver"
+                description="Now a Project ✅"
+                icon={<IconAi className="size-32" />}
+                link={"/anagram"}
+              />
+              <PlaygroundCard
+                title="Metronome (WIP)"
+                description="WIP"
+                icon={<IconClock className="size-32" />}
+                link={"/metronome"}
+              />
+              <PlaygroundCard
+                title="Push The Button (WIP)"
+                description="WIP"
+                icon={<IconPointerUp className="size-32" />}
+                link={"/push-the-button"}
+              />
+              <PlaygroundCard
+                title="KT (WIP)"
+                description="WIP"
+                icon={<IconDice className="size-32" />}
+                link={"/kt"}
+              />
+            </div>
+          </TabsContent>
+        </Tabs>
+      </PageSection>
+
+      <PageSection>
+        <PageSectionHeader>
           <H2>Tutorials</H2>
           <H2Description>Interesting things to look into 👀</H2Description>
         </PageSectionHeader>
 
-        <Tabs defaultValue="1">
-          <TabsList className="glass dark:dark-glass">
+        <Tabs defaultValue={tab2} onValueChange={setTab2}>
+          <TabsList className="glass dark:dark-glass mb-4">
             <TabsTrigger value="1">Stuff to Code</TabsTrigger>
             <TabsTrigger value="2">Stuff to Watch</TabsTrigger>
           </TabsList>
@@ -146,3 +239,17 @@ export default function HomePage() {
     </Page>
   );
 }
+
+interface TabStore {
+  tab1: string;
+  setTab1: (v: string) => void;
+  tab2: string;
+  setTab2: (v: string) => void;
+}
+
+const useTabStore = create<TabStore>((set) => ({
+  tab1: "1",
+  setTab1: (v) => set(() => ({ tab1: v })),
+  tab2: "2",
+  setTab2: (v) => set(() => ({ tab2: v })),
+}));
