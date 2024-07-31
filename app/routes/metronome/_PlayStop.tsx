@@ -1,9 +1,4 @@
-import {
-  IconCircleDashed,
-  IconCircleDashedCheck,
-  IconPlayerPlay,
-  IconPlayerStop,
-} from "@tabler/icons-react";
+import { IconPlayerPlay, IconPlayerStop } from "@tabler/icons-react";
 import { Button } from "~/components/ui";
 import { useMetronomeState } from "./_state";
 
@@ -21,14 +16,14 @@ export const PlayStop = () => {
       >
         {isPlaying ? <IconPlayerStop /> : <IconPlayerPlay />}
       </Button>
-      <Button
+      {/* <Button
         variant={playNotes ? "default" : "outline"}
         className={`flex h-10 w-full gap-2`}
         onClick={() => setPlayNotes(!playNotes)}
       >
         Sub Divisions
         {playNotes ? <IconCircleDashedCheck /> : <IconCircleDashed />}
-      </Button>
+      </Button> */}
     </section>
   );
 };

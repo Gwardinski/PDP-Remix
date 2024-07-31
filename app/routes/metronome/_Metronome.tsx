@@ -1,7 +1,8 @@
-import { useEffect } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useMetronomeState } from "./_state";
 
 export const Metronome = () => {
+  const [clickSound] = useState(new Audio("click.wav"));
   const isPlaying = useMetronomeState((state) => state.isPlaying);
   const beats = useMetronomeState((state) => state.beats);
   const bpm = useMetronomeState((state) => state.bpm);
@@ -9,22 +10,32 @@ export const Metronome = () => {
   const currentBeat = useMetronomeState((state) => state.currentBeat);
   const setCurrentBeat = useMetronomeState((state) => state.setCurrentBeat);
 
-  const secondsBetweenBeats = 60 / bpm;
+  const interval = useMemo(() => 60000 / bpm, [bpm]);
 
   useEffect(() => {
-    if (!isPlaying) {
-      return;
-    }
-    const interval = setInterval(() => {
-      beep();
-      setCurrentBeat(currentBeat + 1 > beats ? 1 : currentBeat + 1);
-    }, secondsBetweenBeats * 1000);
-    return () => clearInterval(interval);
-  }, [isPlaying, secondsBetweenBeats]);
+    let count = 1;
+    let intervalId: NodeJS.Timeout;
 
-  function beep() {
-    console.log("beep");
-  }
+    if (isPlaying) {
+      intervalId = setInterval(() => {
+        const sound = clickSound.cloneNode() as HTMLAudioElement;
+        if (count !== 1) {
+          sound.volume = 0.5;
+        }
+        count++;
+        sound.play();
+        if (count > beats) {
+          count = 1;
+        }
+      }, interval);
+    }
+
+    return () => {
+      if (intervalId) {
+        clearInterval(intervalId);
+      }
+    };
+  }, [isPlaying, bpm, clickSound]);
 
   return (
     <div className="flex w-full items-center justify-center rounded-lg border border-zinc-900 p-4">

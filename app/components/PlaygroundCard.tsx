@@ -14,8 +14,8 @@ export const PlaygroundCard: React.FC<{
   link: string;
 }> = ({ title, description, icon, link }) => {
   return (
-    <Link to={link}>
-      <Card className="flex h-full w-full flex-col">
+    <Link to={link} className="flex h-full w-full flex-col">
+      <Card>
         <CardHeader className="flex flex-col space-y-0">
           <CardTitle className="mb-2 hover:underline">{title}</CardTitle>
           <CardDescription>{description}</CardDescription>

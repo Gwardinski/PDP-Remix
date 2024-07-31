@@ -1,11 +1,10 @@
 import { MetaFunction, json, useLoaderData } from "@remix-run/react";
 import {
   IconAi,
+  IconCandleFilled,
   IconClock,
-  IconDice,
   IconLuggage,
   IconPaint,
-  IconPointerUp,
   IconQuestionMark,
 } from "@tabler/icons-react";
 import { create } from "zustand";
@@ -195,23 +194,23 @@ export default function HomePage() {
                 link={"/anagram"}
               />
               <PlaygroundCard
+                title="Maze (WIP)"
+                description="WIP"
+                icon={<IconCandleFilled className="size-32" />}
+                link={"/maze"}
+              />
+              <PlaygroundCard
                 title="Metronome (WIP)"
                 description="WIP"
                 icon={<IconClock className="size-32" />}
                 link={"/metronome"}
               />
-              <PlaygroundCard
-                title="Push The Button (WIP)"
-                description="WIP"
-                icon={<IconPointerUp className="size-32" />}
-                link={"/push-the-button"}
-              />
-              <PlaygroundCard
+              {/* <PlaygroundCard
                 title="KT (WIP)"
                 description="WIP"
                 icon={<IconDice className="size-32" />}
                 link={"/kt"}
-              />
+              /> */}
             </div>
           </TabsContent>
         </Tabs>
