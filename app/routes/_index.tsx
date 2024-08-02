@@ -188,12 +188,6 @@ export default function HomePage() {
           <TabsContent value="2">
             <div className="glass dark:dark-glass flex w-full grid-cols-1 flex-col items-center justify-center gap-4 overflow-hidden rounded-md p-2 sm:grid sm:grid-cols-2 lg:p-4 xl:grid-cols-4 ">
               <PlaygroundCard
-                title="Anagram Solver"
-                description="Now a Project ✅"
-                icon={<IconAi className="size-32" />}
-                link={"/anagram"}
-              />
-              <PlaygroundCard
                 title="Maze (WIP)"
                 description="WIP"
                 icon={<IconCandleFilled className="size-32" />}
